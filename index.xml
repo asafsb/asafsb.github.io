@@ -5,12 +5,84 @@
     <link>https://softwaredefinedcoffee.com/</link>
       <atom:link href="https://softwaredefinedcoffee.com/index.xml" rel="self" type="application/rss+xml" />
     <description>SOFTWARE-DEFINED COFFEE</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Software-Defined Coffee</copyright><lastBuildDate>Mon, 23 Mar 2020 19:00:11 -0500</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Software-Defined Coffee</copyright><lastBuildDate>Thu, 14 May 2020 22:17:16 -0500</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>SOFTWARE-DEFINED COFFEE</title>
       <link>https://softwaredefinedcoffee.com/</link>
     </image>
+    
+    <item>
+      <title>Configuring L2VPN High Availability in VMW on AWS</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</link>
+      <pubDate>Thu, 14 May 2020 22:17:16 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</guid>
+      <description>&lt;p&gt;When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.&lt;/p&gt;
+&lt;p&gt;VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale. L2 VPN, on the other hand, will provide faster recoverability from an appliance failure, and depending on how many networks are extended, it may use less compute resources on-prem and in the SDDC.&lt;/p&gt;
+&lt;p&gt;Since version 1.9 of VMW on AWS, the NSX-T 2.5 Autonomous Edge is used, which is simpler to configure and more performant than the previous L2 VPN client. In this post I will demonstrate how to configure the HA functionality for the autonomous edge.&lt;/p&gt;
+&lt;p&gt;When configuring a highly avaialable autonomous edge two appliances are deployed. The first edge that is deployed is the Primary edge and the second one is the Secondary edge. The Primary/Secondary value is permanent and simply indicates which edge was deployed first. It doesn&amp;rsquo;t indicate which edge is active and handling the L2 VPN. This is indicated by Active/Standby high availability status in the summary dashboard.&lt;/p&gt;
+&lt;h3 id=&#34;deploying-the-primary-autonomous-edge-and-configuring-l2-vpn&#34;&gt;Deploying the Primary Autonomous Edge and Configuring L2 VPN&lt;/h3&gt;
+&lt;p&gt;My colleague, &lt;a href=&#34;https://davidwzhang.com/&#34; style=&#34;text-decoration: underline&#34;&gt; David Zhang&lt;/a&gt;, wrote &lt;a href=&#34;https://davidwzhang.com/2020/02/24/setting-up-l2vpn-in-vmc-on-aws/&#34; style=&#34;text-decoration: underline&#34;&gt; a great post&lt;/a&gt; explaining all the necessary steps to deploy L2 VPN on VMW on AWS using the autonomous edge. I followed David&amp;rsquo;s guide to configure L2 VPN and used the following values to set up the primary autonomous edge:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Management IP - &lt;strong&gt;192.168.1.240&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;External Port
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth1,192.168.1.241,24&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;GW – &lt;strong&gt;192.168.1.254&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Internal - &lt;strong&gt;left blank&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;HA
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth3,172.25.53.1,24&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;GW – &lt;strong&gt;172.25.53.254&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Do not fill any other values in the HA section&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Primay Autonomous Edge HA Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The L2 VPN tunnel and network extensions can be created before or after the secondary edge is deployed. There is no significance to the order in which these actions are performed.&lt;/p&gt;
+&lt;h3 id=&#34;deploying-the-secondary-autonomous-edge&#34;&gt;Deploying the Secondary Autonomous Edge&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - Deploy the autonomous edge OVF. Make sure the exact same edge size (medium or large) and networks as the primary controller are selected.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Under network properties, enter the hostname, default gateway, management IP and netmask. Make sure the same subnet as the management network of the primary edge is entered. I used &lt;strong&gt;192.168.1.242&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Secondary Autonomous Edge Management Network Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - The external IP of the secondary edge can be blank. After powering on the appliance it will negotiate with the primary edge and the same external IP as the primary edge will be configured in a disconnected state. As with the primary edge the internal port should be blank:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Secondary Autonomous Edge External/Internal Network Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Configure the HA port&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth3,172.25.53.2,24&lt;/strong&gt; This port should be in the same subnet as the HA port of the primary edge&lt;/li&gt;
+&lt;li&gt;Default GW – &lt;strong&gt;172.25.53.254&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check the Secondary API Node checkbox&lt;/li&gt;
+&lt;li&gt;Primary node IP – &lt;strong&gt;192.168.1.240&lt;/strong&gt; This is the management IP of the primary edge deployed previously&lt;/li&gt;
+&lt;li&gt;Primary Node Credentials – If you changed the default username of the primay edge make sure you enter that username. Otherwise, it&amp;rsquo;s &lt;strong&gt;admin&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Primary node thumbprint – To get the API thumbprint login to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
+&lt;code&gt; get certificate api thumbprint&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Primay Edge API Thumbprint&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Secondary Autonomous Edge HA Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Make sure the edge VMs are running on different hosts and migrate one if necessary. If DRS is configured on the cluster create a rule to separate the edges.&lt;/p&gt;
+&lt;h3 id=&#34;validating-the-secondary-edge-deployment&#34;&gt;Validating The Secondary Edge Deployment&lt;/h3&gt;
+&lt;p&gt;A couple of minutes after the secondary edge powered on login to both appliances to validate the High Availability status. Under HA Peer Address, each edge should list the opposite edge’s management IP as a peer.&lt;br&gt;
+&lt;strong&gt;Note&lt;/strong&gt; – for some reason the management and peer addresses list a subnet mask of /19 on the web interface even though the correct mask of /24 is configured.&lt;/p&gt;
+&lt;p&gt;The primary edge should have a Primary API server role and an Active HA status. Once the L2 VPN is configured its status will be Up:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Primary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The secondary edge should have a Secondary API server role and Standby under HA status. Once the L2 VPN is configured its status will be Doen:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In the &lt;em&gt;Port&lt;/em&gt; tab you can see that both edges have port named &lt;strong&gt;lrport_0&lt;/strong&gt; with the same IP and Port ID. The GUI doesn&amp;rsquo;t indicate what is the status of the port but this can be found using CLI. To do so login to both edges with the admin user and type the command &lt;code&gt;get logical-router interfaces&lt;/code&gt; and find the port named &lt;strong&gt;lrport_0&lt;/strong&gt;. You can also type &lt;code&gt;get logical-router interface &amp;lt;port id&amp;gt;&lt;/code&gt;. The &lt;strong&gt;admin&lt;/strong&gt; state of both ports should be &lt;strong&gt;up&lt;/strong&gt; but the &lt;strong&gt;op_state&lt;/strong&gt; of the standby edge should be &lt;strong&gt;down&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Command output of the Active edge:
+&lt;img src=&#34;image8.png&#34; alt=&#34;Active Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Command output of the Stnadby edge:
+&lt;img src=&#34;image9.png&#34; alt=&#34;Standby Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;autonomous-edge-ha-failover-test&#34;&gt;Autonomous Edge HA Failover Test&lt;/h3&gt;
+&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in VMW on AWS. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;HA Failover Test Ping Downtime&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After powering on the powered-off edge the HA status between the edges was re-established. The secondary edge remains the active edge and the primary will become active again only in case of an additional failure.&lt;/p&gt;
+&lt;p&gt;Secondary edge status:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;Primary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Primary edge status:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Tips for a Mobile or Temporary Home Office Setup</title>

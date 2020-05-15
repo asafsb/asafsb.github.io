@@ -3,6 +3,71 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://softwaredefinedcoffee.com/categories/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/l2vpn/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/l2vpn/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/networking/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/networking/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/post/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/vmware-cloud-on-aws/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/vmware-cloud-on-aws/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/vmwonaws/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/vmwonaws/</loc>
+    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://softwaredefinedcoffee.com/authors/admin/</loc>
     <lastmod>2020-03-23T19:00:11-05:00</lastmod>
   </url>
@@ -19,26 +84,6 @@
   
   <url>
     <loc>https://softwaredefinedcoffee.com/categories/business-travel/</loc>
-    <lastmod>2020-03-23T19:00:11-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/categories/</loc>
-    <lastmod>2020-03-23T19:00:11-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/post/</loc>
-    <lastmod>2020-03-23T19:00:11-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/</loc>
-    <lastmod>2020-03-23T19:00:11-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/tags/</loc>
     <lastmod>2020-03-23T19:00:11-05:00</lastmod>
   </url>
   
