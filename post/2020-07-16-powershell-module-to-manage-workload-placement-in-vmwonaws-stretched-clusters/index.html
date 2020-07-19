@@ -28,7 +28,7 @@
   
     
   
-  <meta name="description" content="Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read this article by Emad Younis, this post  by Frank Denneman and this article  by Glenn Sizemore. In addition, as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.
+  <meta name="description" content="Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read  this article by  Emad Younis,  this post by  Frank Denneman and  this article by  Glenn Sizemore. In addition,  as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.
 Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies.">
 
   
@@ -60,6 +60,12 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
     
       
     
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/far.min.css" crossorigin="anonymous" title="hl-light">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/far.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+      
     
 
     
@@ -228,7 +234,7 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
   }
 
   gtag('js', new Date());
-  gtag('config', 'UA-161733961-1', {});
+  gtag('config', 'UA-161733961-1', { 'anonymize_ip': true });
 
   
   document.addEventListener('click', onClickCallback, false);
@@ -256,10 +262,13 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
   
   <meta property="twitter:card" content="summary_large_image">
   
-  <meta property="og:site_name" content="SOFTWARE-DEFINED COFFEE">
+  <meta property="twitter:site" content="@AsafBlubshtein">
+  <meta property="twitter:creator" content="@AsafBlubshtein">
+  
+  <meta property="og:site_name" content="Software-Defined Coffee">
   <meta property="og:url" content="https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/">
-  <meta property="og:title" content="PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters | SOFTWARE-DEFINED COFFEE">
-  <meta property="og:description" content="Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read this article by Emad Younis, this post  by Frank Denneman and this article  by Glenn Sizemore. In addition, as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.
+  <meta property="og:title" content="PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters | Software-Defined Coffee">
+  <meta property="og:description" content="Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read  this article by  Emad Younis,  this post by  Frank Denneman and  this article by  Glenn Sizemore. In addition,  as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.
 Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies."><meta property="og:image" content="https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/featured.png">
   <meta property="twitter:image" content="https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/featured.png"><meta property="og:locale" content="en-us">
   
@@ -308,13 +317,13 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
   
   "publisher": {
     "@type": "Organization",
-    "name": "SOFTWARE-DEFINED COFFEE",
+    "name": "Software-Defined Coffee",
     "logo": {
       "@type": "ImageObject",
       "url": "https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_192x192_fit_lanczos_2.png"
     }
   },
-  "description": "Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read this article by Emad Younis, this post  by Frank Denneman and this article  by Glenn Sizemore. In addition, as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.\nJust like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies."
+  "description": "Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read  this article by  Emad Younis,  this post by  Frank Denneman and  this article by  Glenn Sizemore. In addition,  as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.\nJust like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies."
 }
 </script>
 
@@ -324,6 +333,36 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
 
   
+  
+  
+  
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.js" integrity="sha256-5VhCqFam2Cn+yjw61zbBNrbHVJ6SRydPeKopYlngbiQ=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.css" integrity="sha256-zQ0LblD/Af8vOppw18+2anxsuaz3pWYyVWi+bTvTH8Q=" crossorigin="anonymous">
+  
+  <script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#FDFDFD",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#FDFDFD"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "This website uses cookies to ensure you get the best experience on our website.",
+        "dismiss": "Got it!",
+        "link": "Learn more",
+        "href": "https://www.cookiesandyou.com"
+      }
+    })});
+  </script>
+
 
 
   
@@ -332,7 +371,7 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
 
 
-  <title>PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters | SOFTWARE-DEFINED COFFEE</title>
+  <title>PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters | Software-Defined Coffee</title>
 
 </head>
 
@@ -385,7 +424,7 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="SOFTWARE-DEFINED COFFEE"></a>
+      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="Software-Defined Coffee"></a>
     </div>
     
 
@@ -398,7 +437,7 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="SOFTWARE-DEFINED COFFEE"></a>
+      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="Software-Defined Coffee"></a>
     </div>
     
 
@@ -638,12 +677,21 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
   <div class="article-container">
 
     <div class="article-style">
-      <p>Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read <a href="https://cloud.vmware.com/community/2018/05/15/stretched-clusters-vmware-cloud-aws-overview/" style="text-decoration: underline"> this article</a> by <a href="https://emadyounis.com/" style="text-decoration: underline"> Emad Younis</a>, <a href="https://frankdenneman.nl/2018/05/16/stretched-clusters-vmware-cloud-aws-really-big-thing/" style="text-decoration: underline"> this post </a> by <a href="https://frankdenneman.nl/" style="text-decoration: underline"> Frank Denneman</a> and <a href="https://blogs.vmware.com/virtualblocks/2018/05/15/relentless-availability-powered-vsan-stretched-clusters-vmware-cloud-aws/" style="text-decoration: underline"> this article </a> by <a href="https://twitter.com/glnsize" style="text-decoration: underline"> Glenn Sizemore</a>. In addition, <a href="https://blogs.vmware.com/virtualblocks/2019/12/03/reduced-pricing-stretched-clusters-vmware-cloud-aws/" style="text-decoration: underline"> as announced in December 2019</a>, there is a 95% discount on the cross-AZ traffic between the AZs.</p>
+      <p>Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read <ins>
+<a href="https://cloud.vmware.com/community/2018/05/15/stretched-clusters-vmware-cloud-aws-overview/" target="_blank" rel="noopener">this article</a></ins> by <ins>
+<a href="https://emadyounis.com/" target="_blank" rel="noopener">Emad Younis</a></ins>, <ins>
+<a href="https://frankdenneman.nl/2018/05/16/stretched-clusters-vmware-cloud-aws-really-big-thing/" target="_blank" rel="noopener">this post</a></ins> by <ins>
+<a href="https://frankdenneman.nl/" target="_blank" rel="noopener">Frank Denneman</a></ins> and <ins>
+<a href="https://blogs.vmware.com/virtualblocks/2018/05/15/relentless-availability-powered-vsan-stretched-clusters-vmware-cloud-aws/" target="_blank" rel="noopener">this article</a></ins> by <ins>
+<a href="https://twitter.com/glnsize" target="_blank" rel="noopener">Glenn Sizemore</a></ins>. In addition, <ins>
+<a href="https://blogs.vmware.com/virtualblocks/2019/12/03/reduced-pricing-stretched-clusters-vmware-cloud-aws/" target="_blank" rel="noopener">as announced in December 2019</a></ins>, there is a 95% discount on the cross-AZ traffic between the AZs.</p>
 <p>Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies. The <strong>Failures to tolerate</strong> settings defines how data is placed in a single AZ, e.g. RAID1 FTT1, while <strong>Site disaster tolerance</strong> configures how data is placed across the AZs. The workload can either be mirrored across sites or set to a specific site (preferred or non-preferred) with no cross-site protection. Logically, most workloads in a Stretched Cluster will be protected across both sites. However, there may be some cases where vSAN cross-AZ protection is unnecessary, such as workloads that already offer application level redundancy.</p>
 <p><img src="image1.png" alt="Stretched Cluster Storage Policy"></p>
 <p>One aspect that is sometimes overlooked is that the storage policies only handle data placement while the placement of compute is handled by DRS. By default, DRS has no awareness of where the storage of a specific workload resides and whether it&rsquo;s replicated across the sites. This can result in a misalignment of the data and compute placement. For example, the storage policy can configure data to be placed in the preferred site while DRS places or moves the VM to a host in the non-preferred one. Another potential scenario is a clustered application that can have both instances running on hosts in the same AZ which increases recovery time in case of an AZ failure.</p>
 <p><img src="image2.png" alt="Stretched Cluster Data and Compute Misalignment"></p>
-<p>On-prem, DRS affinity rules are leveraged to make DRS aware of vSAN storage placement. In VMW on AWS the same outcome can be achieved using tags and <a href="https://blogs.vmware.com/vsphere/2019/08/vmware-cloud-on-aws-policies.html" style="text-decoration: underline">Compute Policies</a>. Basically, two VM-Host compute policies should be created – one for the preferred site and on for the non-preferred site. After that all the hosts in the corresponding fault-domains will need to be tagged. In addition, every time a host is added to the cluster it will need to be tagged otherwise no VMs from these compute policies will be running on the new host. It is possible to create the compute policies manually and then tag all the hosts, but to make the process easier and faster I created a PowerShell module named <a href="https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging" style="text-decoration: underline">MultiAZTagging.psm1</a> to create the policies and tag the hosts.</p>
+<p>On-prem, DRS affinity rules are leveraged to make DRS aware of vSAN storage placement. In VMW on AWS the same outcome can be achieved using tags and <ins>
+<a href="https://blogs.vmware.com/vsphere/2019/08/vmware-cloud-on-aws-policies.html" target="_blank" rel="noopener">Compute Policies</a></ins>. Basically, two VM-Host compute policies should be created – one for the preferred site and on for the non-preferred site. After that all the hosts in the corresponding fault-domains will need to be tagged. In addition, every time a host is added to the cluster it will need to be tagged otherwise no VMs from these compute policies will be running on the new host. It is possible to create the compute policies manually and then tag all the hosts, but to make the process easier and faster I created a PowerShell module named <ins>
+<a href="https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging" target="_blank" rel="noopener">MultiAZTagging.psm1</a></ins> to create the policies and tag the hosts.</p>
 <h3 id="powershell-module-review">PowerShell Module Review</h3>
 <p>The module contains two cmdlets:</p>
 <ul>
@@ -655,9 +703,11 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 <p><img src="image3.png" alt="Test Environment Fault Domains"></p>
 <p>There’s two VMs in the cluster, <strong>az1</strong> and <strong>az2</strong>. At the moment they both run on a host in us-west-2b, which is the preferred site:</p>
 <p><img src="image4.png" alt="Test Environment VM Placement Pre Script"></p>
-<p><strong>Step 1</strong> - <a href="https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging" style="text-decoration: underline">Download the PowerShell module</a></p>
+<p><strong>Step 1</strong> - <ins>
+<a href="https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging" target="_blank" rel="noopener">Download the PowerShell module</a></ins></p>
 <p><strong>Step 2</strong> - Import the PowerShell module</p>
-<p><code>Import-Module MultiAZTagging.psm1</code></p>
+<pre><code class="language-powershell">Import-Module .\MultiAZTagging.psm1
+</code></pre>
 <p><strong>Step 3</strong> - Connect to a vCenter in a Stretched Cluster SDDC using <em><strong>Connect-VIServer</strong></em></p>
 <p><img src="image5.png" alt="Connect-VIServer"></p>
 <p><strong>Step 4</strong> - Connect to the same vCenter using <em><strong>Connect-CisServer</strong></em> (this step is required to create the compute policies)</p>
@@ -697,7 +747,8 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 </ul>
 <p><img src="image15.png" alt="Test Environment VM Placement Post Script"></p>
 <p>As I mentioned before, there are several use cases I can think of for pinning a VM to a specific site. The most obvious one is a VM that is not replicated across AZs, so it makes sense to have the VM running in the same AZ. The second one is a resilient application, such as AD Domain Controllers, where making sure at least one node is always running. The great thing about compute policies is that they leverage a ‘should’ rule. That means that if an entire AZ fails, for example the non-preferred one, if the VM data is replicated the VMs set to the MultiAZ-non-preferred compute policy will still be powered on the preferred site by vSphere HA. Once the non-preferred AZ comes back up DRS will migrate the VMs to hosts the adhere to the compute policy.</p>
-<p>I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run <strong>Set-MultiAzHostTag</strong> again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with <a href="https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging" style="text-decoration: underline">VEBA</a>, so it can be run when a new host is added to the SDDC.</p>
+<p>I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run <strong>Set-MultiAzHostTag</strong> again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with <ins>
+<a href="https://vmweventbroker.io/" target="_blank" rel="noopener">VEBA</a></ins>, so it can be run when a new host is added to the SDDC.</p>
 
     </div>
 
@@ -998,6 +1049,21 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
 
 
+<div class="article-widget">
+  
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/" rel="prev">Configuring L2VPN High Availability in VMW on AWS</a>
+  </div>
+  
+</div>
+
+</div>
+
 
 
   
@@ -1030,6 +1096,14 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
       
 
       
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/powershell.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/python.min.js"></script>
+        
+      
 
     
 
@@ -1038,7 +1112,7 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
     
     
-    <script>const code_highlighting = false;</script>
+    <script>const code_highlighting = true;</script>
     
 
     

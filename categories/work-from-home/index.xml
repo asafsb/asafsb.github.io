@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Work From Home | SOFTWARE-DEFINED COFFEE</title>
+    <title>Work From Home | Software-Defined Coffee</title>
     <link>https://softwaredefinedcoffee.com/categories/work-from-home/</link>
       <atom:link href="https://softwaredefinedcoffee.com/categories/work-from-home/index.xml" rel="self" type="application/rss+xml" />
     <description>Work From Home</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Software-Defined Coffee</copyright><lastBuildDate>Mon, 23 Mar 2020 19:00:11 -0500</lastBuildDate>
     <image>
-      <url>https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_300x300_fit_lanczos_2.png</url>
+      <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
       <title>Work From Home</title>
       <link>https://softwaredefinedcoffee.com/categories/work-from-home/</link>
     </image>

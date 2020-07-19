@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>SOFTWARE-DEFINED COFFEE</title>
+    <title>Software-Defined Coffee</title>
     <link>https://softwaredefinedcoffee.com/authors/admin/</link>
       <atom:link href="https://softwaredefinedcoffee.com/authors/admin/index.xml" rel="self" type="application/rss+xml" />
-    <description>SOFTWARE-DEFINED COFFEE</description>
+    <description>Software-Defined Coffee</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Software-Defined Coffee</copyright><lastBuildDate>Mon, 23 Mar 2020 19:00:11 -0500</lastBuildDate>
     <image>
-      <url>https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_300x300_fit_lanczos_2.png</url>
-      <title>SOFTWARE-DEFINED COFFEE</title>
+      <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
+      <title>Software-Defined Coffee</title>
       <link>https://softwaredefinedcoffee.com/authors/admin/</link>
     </image>
     

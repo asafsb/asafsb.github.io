@@ -60,6 +60,12 @@
       
     
     
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/far.min.css" crossorigin="anonymous" title="hl-light">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/far.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+      
+    
 
     
 
@@ -227,7 +233,7 @@
   }
 
   gtag('js', new Date());
-  gtag('config', 'UA-161733961-1', {});
+  gtag('config', 'UA-161733961-1', { 'anonymize_ip': true });
 
   
   document.addEventListener('click', onClickCallback, false);
@@ -238,7 +244,7 @@
 
 
   
-  <link rel="alternate" href="/tags/stretched-cluster/index.xml" type="application/rss+xml" title="SOFTWARE-DEFINED COFFEE">
+  <link rel="alternate" href="/tags/stretched-cluster/index.xml" type="application/rss+xml" title="Software-Defined Coffee">
   
 
   <link rel="manifest" href="/index.webmanifest">
@@ -253,16 +259,18 @@
   
   
     
-    
   
   
-  <meta property="twitter:card" content="summary">
+  <meta property="twitter:card" content="summary_large_image">
   
-  <meta property="og:site_name" content="SOFTWARE-DEFINED COFFEE">
+  <meta property="twitter:site" content="@AsafBlubshtein">
+  <meta property="twitter:creator" content="@AsafBlubshtein">
+  
+  <meta property="og:site_name" content="Software-Defined Coffee">
   <meta property="og:url" content="https://softwaredefinedcoffee.com/tags/stretched-cluster/">
-  <meta property="og:title" content="Stretched Cluster | SOFTWARE-DEFINED COFFEE">
-  <meta property="og:description" content="Cloud Customer Success Architect"><meta property="og:image" content="https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_300x300_fit_lanczos_2.png">
-  <meta property="twitter:image" content="https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_300x300_fit_lanczos_2.png"><meta property="og:locale" content="en-us">
+  <meta property="og:title" content="Stretched Cluster | Software-Defined Coffee">
+  <meta property="og:description" content="Cloud Customer Success Architect"><meta property="og:image" content="https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png">
+  <meta property="twitter:image" content="https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png"><meta property="og:locale" content="en-us">
   
     <meta property="og:updated_time" content="2020-07-16T20:44:10-05:00">
   
@@ -273,6 +281,36 @@
 
 
   
+  
+  
+  
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.js" integrity="sha256-5VhCqFam2Cn+yjw61zbBNrbHVJ6SRydPeKopYlngbiQ=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.css" integrity="sha256-zQ0LblD/Af8vOppw18+2anxsuaz3pWYyVWi+bTvTH8Q=" crossorigin="anonymous">
+  
+  <script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#FDFDFD",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#FDFDFD"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "This website uses cookies to ensure you get the best experience on our website.",
+        "dismiss": "Got it!",
+        "link": "Learn more",
+        "href": "https://www.cookiesandyou.com"
+      }
+    })});
+  </script>
+
 
 
   
@@ -281,7 +319,7 @@
 
 
 
-  <title>Stretched Cluster | SOFTWARE-DEFINED COFFEE</title>
+  <title>Stretched Cluster | Software-Defined Coffee</title>
 
 </head>
 
@@ -334,7 +372,7 @@
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="SOFTWARE-DEFINED COFFEE"></a>
+      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="Software-Defined Coffee"></a>
     </div>
     
 
@@ -347,7 +385,7 @@
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="SOFTWARE-DEFINED COFFEE"></a>
+      <a class="navbar-brand" href="/"><img src="/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_0x70_resize_lanczos_2.png" alt="Software-Defined Coffee"></a>
     </div>
     
 
@@ -540,7 +578,7 @@
       <h2><a href="/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/" >PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters</a></h2>
       <div class="article-style">
         
-          Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read this article by Emad Younis, this post  by Frank Denneman and this article  by Glenn Sizemore. In addition, as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.
+          Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read  this article by  Emad Younis,  this post by  Frank Denneman and  this article by  Glenn Sizemore. In addition,  as announced in December 2019, there is a 95% discount on the cross-AZ traffic between the AZs.
 Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies.
         
       </div>
@@ -564,6 +602,14 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
       
 
       
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/powershell.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/python.min.js"></script>
+        
+      
 
     
 
@@ -572,7 +618,7 @@ Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is
 
     
     
-    <script>const code_highlighting = false;</script>
+    <script>const code_highlighting = true;</script>
     
 
     
