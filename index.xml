@@ -5,7 +5,7 @@
     <link>https://softwaredefinedcoffee.com/</link>
       <atom:link href="https://softwaredefinedcoffee.com/index.xml" rel="self" type="application/rss+xml" />
     <description>Software-Defined Coffee</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Software-Defined Coffee</copyright><lastBuildDate>Thu, 16 Jul 2020 20:44:10 -0500</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Software-Defined Coffee</copyright><lastBuildDate>Tue, 16 Jun 2020 00:00:00 +0100</lastBuildDate>
     <image>
       <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
       <title>Software-Defined Coffee</title>
@@ -89,6 +89,31 @@
 &lt;p&gt;As I mentioned before, there are several use cases I can think of for pinning a VM to a specific site. The most obvious one is a VM that is not replicated across AZs, so it makes sense to have the VM running in the same AZ. The second one is a resilient application, such as AD Domain Controllers, where making sure at least one node is always running. The great thing about compute policies is that they leverage a ‘should’ rule. That means that if an entire AZ fails, for example the non-preferred one, if the VM data is replicated the VMs set to the MultiAZ-non-preferred compute policy will still be powered on the preferred site by vSphere HA. Once the non-preferred AZ comes back up DRS will migrate the VMs to hosts the adhere to the compute policy.&lt;/p&gt;
 &lt;p&gt;I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with &lt;ins&gt;
 &lt;a href=&#34;https://vmweventbroker.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;VEBA&lt;/a&gt;&lt;/ins&gt;, so it can be run when a new host is added to the SDDC.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Privacy Policy</title>
+      <link>https://softwaredefinedcoffee.com/privacy/</link>
+      <pubDate>Tue, 16 Jun 2020 00:00:00 +0100</pubDate>
+      <guid>https://softwaredefinedcoffee.com/privacy/</guid>
+      <description>&lt;h2 id=&#34;who-we-are&#34;&gt;Who we are&lt;/h2&gt;
+&lt;p&gt;The website address is &lt;a href=&#34;https://softwaredefinedcoffee.com&#34;&gt;https://softwaredefinedcoffee.com&lt;/a&gt;, owned by Asaf Blubshtein.&lt;/p&gt;
+&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
+&lt;p&gt;This website uses a comment system powered by &lt;ins&gt;
+&lt;a href=&#34;https://graphcomment.com/en/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GraphComment&lt;/a&gt;&lt;/ins&gt;, a company based out of Paris, France. The system doesn’t collect the names of the visitors who leave comments on the site and they remain anonymous in analytics. You can refer to the provider’s &lt;ins&gt;
+&lt;a href=&#34;https://graphcomment.com/en/conditions.html#5&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;privacy policy&lt;/a&gt;&lt;/ins&gt; for more information.&lt;/p&gt;
+&lt;h2 id=&#34;google-analytics&#34;&gt;Google Analytics&lt;/h2&gt;
+&lt;p&gt;This website uses &lt;ins&gt;
+&lt;a href=&#34;https://analytics.google.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google Analytics&lt;/a&gt;&lt;/ins&gt; to collect information required to analyze the traffic of this site. For each visitor to reach the site, Google Analytics collects the following non-personally identifiable information, including but not limited to browser type, version and language, operating system, pages viewed while browsing the site, page access times and referring website address. This information is presented to me as aggregated reports.&lt;/p&gt;
+&lt;p&gt;I have set the &lt;ins&gt;
+&lt;a href=&#34;https://gohugo.io/about/hugo-and-gdpr/#all-privacy-settings&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hugo GDPR options&lt;/a&gt;&lt;/ins&gt; so that your IP address is anonymised within Google Analytics and the “Do Not Track” request is respected. For more information, please refer to Google Analytics &lt;ins&gt;
+&lt;a href=&#34;https://support.google.com/analytics/answer/6004245&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;data privacy and security policy&lt;/a&gt;&lt;/ins&gt;. You may opt-out to Google Analytics service by visiting &lt;ins&gt;
+&lt;a href=&#34;https://tools.google.com/dlpage/gaoptout/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this page&lt;/a&gt;&lt;/ins&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;media&#34;&gt;Media&lt;/h2&gt;
+&lt;p&gt;If you upload images to the website, you should avoid uploading images with embedded location data (EXIF GPS) included. Visitors to the website can download and extract any location data from images on the website.&lt;/p&gt;
+&lt;h2 id=&#34;embedded-content-from-other-websites&#34;&gt;Embedded content from other websites&lt;/h2&gt;
+&lt;p&gt;Articles on this site may include embedded content (e.g. videos, images, articles, etc.). Embedded content from other websites behaves in the exact same way as if the visitor has visited the other website.&lt;/p&gt;
 </description>
     </item>
     
