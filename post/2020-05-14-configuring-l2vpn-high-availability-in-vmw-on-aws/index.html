@@ -28,7 +28,7 @@
   
     
   
-  <meta name="description" content="When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.
+  <meta name="description" content="When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-pre2301 networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.
 VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale.">
 
   
@@ -268,7 +268,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
   <meta property="og:site_name" content="Software-Defined Coffee">
   <meta property="og:url" content="https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/">
   <meta property="og:title" content="Configuring L2VPN High Availability in VMW on AWS | Software-Defined Coffee">
-  <meta property="og:description" content="When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.
+  <meta property="og:description" content="When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-pre2301 networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.
 VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale."><meta property="og:image" content="https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/featured.png">
   <meta property="twitter:image" content="https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/featured.png"><meta property="og:locale" content="en-us">
   
@@ -323,7 +323,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       "url": "https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_192x192_fit_lanczos_2.png"
     }
   },
-  "description": "When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.\nVMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale."
+  "description": "When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-pre2301 networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.\nVMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale."
 }
 </script>
 
@@ -621,6 +621,16 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 
   
   
+  
+  
+  <div>
+    
+
+  
+  <span><a href="/authors/admin/">Asaf Blubshtein</a></span>
+  </div>
+  
+  
 
   
   <span class="article-date">
@@ -677,7 +687,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
   <div class="article-container">
 
     <div class="article-style">
-      <p>When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.</p>
+      <p>When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-pre2301 networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.</p>
 <p>VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale. L2 VPN, on the other hand, will provide faster recoverability from an appliance failure, and depending on how many networks are extended, it may use less compute resources on-prem and in the SDDC.</p>
 <p>Since version 1.9 of VMW on AWS, the NSX-T 2.5 Autonomous Edge is used, which is simpler to configure and more performant than the previous L2 VPN client. In this post I will demonstrate how to configure the HA functionality for the autonomous edge.</p>
 <p>When configuring a highly avaialable autonomous edge two appliances are deployed. The first edge that is deployed is the Primary edge and the second one is the Secondary edge. The Primary/Secondary value is permanent and simply indicates which edge was deployed first. It doesn&rsquo;t represent which edge is active and handling the L2 VPN. This is shown by Active/Standby high availability status in the summary dashboard.</p>
@@ -871,7 +881,8 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 
 
   
-  
+    
+    
 
 
 
@@ -1002,6 +1013,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
   </div>
 
 
+  
 
 
 
@@ -1201,7 +1213,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.<br>
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.<br><br>
     Disclaimer: The views and opinions expressed on this blog are my own and do not reflect the views and opinions of my employer.
     
     <span class="float-right" aria-hidden="true">
