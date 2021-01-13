@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NV | Software-Defined Coffee</title>
+    <link>https://softwaredefinedcoffee.com/tags/nv/</link>
+      <atom:link href="https://softwaredefinedcoffee.com/tags/nv/index.xml" rel="self" type="application/rss+xml" />
+    <description>NV</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Wed, 13 Jan 2021 00:52:59 -0600</lastBuildDate>
+    <image>
+      <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
+      <title>NV</title>
+      <link>https://softwaredefinedcoffee.com/tags/nv/</link>
+    </image>
+    
+    <item>
+      <title>Scenario 1</title>
+      <link>https://softwaredefinedcoffee.com/vcdx-panel/scenario-1/</link>
+      <pubDate>Tue, 12 Jan 2021 22:01:42 -0600</pubDate>
+      <guid>https://softwaredefinedcoffee.com/vcdx-panel/scenario-1/</guid>
+      <description>&lt;p&gt;ACME Inc is a healthcare provider that is trying to expand their virtual medical business. They are hosting their services using AWS currently, but they want to build out their own private cloud.&lt;/p&gt;
+&lt;details&gt;
+  &lt;summary&gt;Panelist only&lt;/summary&gt;
+&lt;p&gt;&lt;ins&gt;
+&lt;a href=&#34;https://softwaredefinedcoffee.com/vcdx-panel/scenario-1&#34;&gt;panelist view&lt;/a&gt;&lt;/ins&gt;
+&lt;ins&gt;
+&lt;a href=&#34;https://softwaredefinedcoffee.com/vcdx-panel/scenario-2&#34;&gt;panelist view scen5&lt;/a&gt;&lt;/ins&gt;&lt;/p&gt;
+&lt;/details&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Scenario 3</title>
+      <link>https://softwaredefinedcoffee.com/project/scenario-3/</link>
+      <pubDate>Wed, 13 Jan 2021 00:52:57 -0600</pubDate>
+      <guid>https://softwaredefinedcoffee.com/project/scenario-3/</guid>
+      <description>&lt;p&gt;Acme Energy currently has 2 data centers, one in Los Angeles and one in Long Beach.
+Most of the hardware is EOS/EOL and they would like to build out two new DCs that are farther away from one another. They want to keep the existing facility in L.A., build the second one in Dallas, and decommission the one in Long Beach within 6 months.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Scenario 4</title>
+      <link>https://softwaredefinedcoffee.com/project/scenario-4/</link>
+      <pubDate>Wed, 13 Jan 2021 00:52:59 -0600</pubDate>
+      <guid>https://softwaredefinedcoffee.com/project/scenario-4/</guid>
+      <description>&lt;p&gt;Acme Inc is a company that makes 3D print figurines. It has grown so much in the last year that their current data center cannot handle the load.
+They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

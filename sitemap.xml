@@ -3,17 +3,117 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://softwaredefinedcoffee.com/authors/admin/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
+    <loc>https://softwaredefinedcoffee.com/project/scenario-1/</loc>
+    <lastmod>2021-01-12T22:01:42-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx-panel/scenario-1/</loc>
+    <lastmod>2021-01-12T22:01:42-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/project/scenario-2/</loc>
+    <lastmod>2021-01-13T00:30:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx-panel/scenario-2/</loc>
+    <lastmod>2021-01-13T00:30:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/project/scenario-3/</loc>
+    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx-panel/scenario-3/</loc>
+    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/project/scenario-4/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx-panel/scenario-4/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/authors/vcdx/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
   </url>
   
   <url>
     <loc>https://softwaredefinedcoffee.com/authors/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/dcv/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/nv/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/project/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx-panel/</loc>
+    <lastmod>2021-01-13T00:52:59-06:00</lastmod>
   </url>
   
   <url>
     <loc>https://softwaredefinedcoffee.com/categories/</loc>
+    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/dtm/</loc>
+    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/dtm/</loc>
+    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/nv/</loc>
+    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/cma/</loc>
+    <lastmod>2021-01-13T00:30:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/cma/</loc>
+    <lastmod>2021-01-13T00:30:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/dcv/</loc>
+    <lastmod>2021-01-12T22:01:42-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/authors/admin/</loc>
     <lastmod>2020-07-16T20:44:10-05:00</lastmod>
   </url>
   
@@ -48,7 +148,12 @@
   </url>
   
   <url>
-    <loc>https://softwaredefinedcoffee.com/tags/</loc>
+    <loc>https://softwaredefinedcoffee.com/tags/vmc-on-aws/</loc>
+    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/vmc-on-aws/</loc>
     <lastmod>2020-07-16T20:44:10-05:00</lastmod>
   </url>
   
@@ -140,6 +245,10 @@
   <url>
     <loc>https://softwaredefinedcoffee.com/categories/work-from-home/</loc>
     <lastmod>2020-03-23T19:00:11-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx/</loc>
   </url>
   
   <url>

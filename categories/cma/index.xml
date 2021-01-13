@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CMA | Software-Defined Coffee</title>
+    <link>https://softwaredefinedcoffee.com/categories/cma/</link>
+      <atom:link href="https://softwaredefinedcoffee.com/categories/cma/index.xml" rel="self" type="application/rss+xml" />
+    <description>CMA</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Wed, 13 Jan 2021 00:30:22 -0600</lastBuildDate>
+    <image>
+      <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
+      <title>CMA</title>
+      <link>https://softwaredefinedcoffee.com/categories/cma/</link>
+    </image>
+    
+    <item>
+      <title>Scenario 2</title>
+      <link>https://softwaredefinedcoffee.com/project/scenario-2/</link>
+      <pubDate>Wed, 13 Jan 2021 00:30:22 -0600</pubDate>
+      <guid>https://softwaredefinedcoffee.com/project/scenario-2/</guid>
+      <description>&lt;p&gt;Air Airlines is operating Datacenters in the San Francisco Bay Area, Seattle and Miami. Virtualization ratio is 60%. The company is looking for a solution to virtualize the backend servers hosting their check in and baggage claim applications.&lt;/p&gt;
+&lt;details&gt;
+  &lt;summary&gt;Link to panelist view&lt;/summary&gt;
+&lt;p&gt;&lt;ins&gt;
+&lt;a href=&#34;https://softwaredefinedcoffee.com/vcdx-panel/scenario-2&#34;&gt;panelist view&lt;/a&gt;&lt;/ins&gt;&lt;/p&gt;
+&lt;/details&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
