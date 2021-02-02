@@ -28,7 +28,7 @@
   
     
   
-  <meta name="description" content="CMA Scenario">
+  <meta name="description" content="Air airlines">
 
   
   <link rel="alternate" hreflang="en-us" href="https://softwaredefinedcoffee.com/project/scenario-2/">
@@ -267,7 +267,7 @@
   <meta property="og:site_name" content="Software-Defined Coffee">
   <meta property="og:url" content="https://softwaredefinedcoffee.com/project/scenario-2/">
   <meta property="og:title" content="Scenario 2 | Software-Defined Coffee">
-  <meta property="og:description" content="CMA Scenario"><meta property="og:image" content="https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png">
+  <meta property="og:description" content="Air airlines"><meta property="og:image" content="https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png">
   <meta property="twitter:image" content="https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png"><meta property="og:locale" content="en-us">
   
     
@@ -315,7 +315,7 @@
       "url": "https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_192x192_fit_lanczos_2.png"
     }
   },
-  "description": "CMA Scenario"
+  "description": "Air airlines"
 }
 </script>
 
@@ -644,10 +644,6 @@
 
   
   
-  <span class="middot-divider"></span>
-  <span class="article-categories">
-    <i class="fas fa-folder mr-1"></i><a href="/categories/cma/">CMA</a></span>
-  
 
 </div>
 
@@ -675,11 +671,23 @@
 
     <div class="article-style">
       <p>Air Airlines is operating Datacenters in the San Francisco Bay Area, Seattle and Miami. Virtualization ratio is 60%. The company is looking for a solution to virtualize the backend servers hosting their check in and baggage claim applications.</p>
+<p>Due to past experiences with mixed environments, they have requested for a 100% virtualized design.
+Availability is absolute top priority for Air Airlines. Downtimes must be reduced as much as possible (planned and unplanned).</p>
 <details>
-  <summary>Link to panelist view</summary>
-<p><ins>
-<a href="/vcdx-panel/scenario-2">panelist view</a></ins></p>
+  <summary>Panelist only information</summary>
+<h2 id="potential-guidelines">Potential guidelines</h2>
+<ul>
+<li>99.9% uptime for the backend service, even in case of a disaster</li>
+<li>Applications must scale easily</li>
+<li>The two applications share a single web front end. Each application has its own application tier and database tier.</li>
+<li>Due to air traffic security restrictions, access to the infrastructure must be very restricted and secured</li>
+<li>Design needs to be server and network vendor agnostic</li>
+</ul>
 </details>
+<br>
+<p>Source: <ins>
+<a href="https://s3-us-west-2.amazonaws.com/vcdx-workshop/2018_VCDX_WORKSHOP_FINAL.pdf" target="_blank" rel="noopener">2018 VCDX Workshop (Online)</a></ins>, originally uploaded to the VCDX Prep Group by <ins>
+<a href="https://twitter.com/uprightvinyl" target="_blank" rel="noopener">Chris Porter</a></ins></p>
 
     </div>
 
@@ -689,7 +697,7 @@
 
 <div class="article-tags">
   
-  <a class="badge badge-light" href="/tags/cma/">CMA</a>
+  <a class="badge badge-light" href="/tags/vcdx-dcv-mock/">VCDX-DCV Mock</a>
   
 </div>
 
@@ -828,72 +836,6 @@
       
       <ul class="network-icon" aria-hidden="true">
   
-    
-    
-    
-      
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="/#contact" >
-        <i class="fas fa-envelope"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-      
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="https://twitter.com/USERNAME" target="_blank" rel="noopener">
-        <i class="fab fa-twitter"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="https://scholar.google.com/citations?user=PERSON-ID" target="_blank" rel="noopener">
-        <i class="ai ai-google-scholar"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-      
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="https://github.com/USERNAME" target="_blank" rel="noopener">
-        <i class="fab fa-github"></i>
-      </a>
-    </li>
-  
 </ul>
 
     </div>
@@ -967,6 +909,15 @@
 
 
   
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/project/scenario-1/">Scenario 1</a></li>
+      
+    </ul>
+  </div>
   
 
 

@@ -13,105 +13,12 @@
     </image>
     
     <item>
-      <title>Scenario 1</title>
-      <link>https://softwaredefinedcoffee.com/project/scenario-1/</link>
-      <pubDate>Tue, 12 Jan 2021 22:01:42 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/project/scenario-1/</guid>
-      <description>&lt;p&gt;ACME Inc is a healthcare provider that is trying to expand their virtual medical business. They are hosting their services using AWS currently, but they want to build out their own private cloud.&lt;/p&gt;
-&lt;details&gt;
-  &lt;summary&gt;Panelist only&lt;/summary&gt;
-&lt;h3 id=&#34;design-scenario-objectives&#34;&gt;Design Scenario Objectives&lt;/h3&gt;
-&lt;p&gt;Things where&lt;/p&gt;
-&lt;h3 id=&#34;dcv-tips&#34;&gt;DCV Tips&lt;/h3&gt;
-&lt;p&gt;Stuff&lt;/p&gt;
-&lt;/details&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 1</title>
-      <link>https://softwaredefinedcoffee.com/vcdx-panel/scenario-1/</link>
-      <pubDate>Tue, 12 Jan 2021 22:01:42 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/vcdx-panel/scenario-1/</guid>
-      <description>&lt;p&gt;ACME Inc is a healthcare provider that is trying to expand their virtual medical business. They are hosting their services using AWS currently, but they want to build out their own private cloud.&lt;/p&gt;
-&lt;details&gt;
-  &lt;summary&gt;Panelist only&lt;/summary&gt;
-&lt;p&gt;&lt;ins&gt;
-&lt;a href=&#34;https://softwaredefinedcoffee.com/vcdx-panel/scenario-1&#34;&gt;panelist view&lt;/a&gt;&lt;/ins&gt;
-&lt;ins&gt;
-&lt;a href=&#34;https://softwaredefinedcoffee.com/vcdx-panel/scenario-2&#34;&gt;panelist view scen5&lt;/a&gt;&lt;/ins&gt;&lt;/p&gt;
-&lt;/details&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 2</title>
-      <link>https://softwaredefinedcoffee.com/project/scenario-2/</link>
-      <pubDate>Wed, 13 Jan 2021 00:30:22 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/project/scenario-2/</guid>
-      <description>&lt;p&gt;Air Airlines is operating Datacenters in the San Francisco Bay Area, Seattle and Miami. Virtualization ratio is 60%. The company is looking for a solution to virtualize the backend servers hosting their check in and baggage claim applications.&lt;/p&gt;
-&lt;details&gt;
-  &lt;summary&gt;Link to panelist view&lt;/summary&gt;
-&lt;p&gt;&lt;ins&gt;
-&lt;a href=&#34;https://softwaredefinedcoffee.com/vcdx-panel/scenario-2&#34;&gt;panelist view&lt;/a&gt;&lt;/ins&gt;&lt;/p&gt;
-&lt;/details&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 2</title>
-      <link>https://softwaredefinedcoffee.com/vcdx-panel/scenario-2/</link>
-      <pubDate>Wed, 13 Jan 2021 00:30:22 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/vcdx-panel/scenario-2/</guid>
-      <description>&lt;p&gt;Air Airlines is operating Datacenters in the San Francisco Bay Area, Seattle and Miami. Virtualization ratio is 60%. The company is looking for a solution to virtualize the backend servers hosting their check in and baggage claim applications.&lt;/p&gt;
-&lt;details&gt;
-  &lt;summary&gt;Panelist view&lt;/summary&gt;
-&lt;h3 id=&#34;design-scenario-objectives&#34;&gt;Design Scenario Objectives&lt;/h3&gt;
-&lt;p&gt;Things where&lt;/p&gt;
-&lt;h3 id=&#34;dcv-tips&#34;&gt;DCV Tips&lt;/h3&gt;
-&lt;p&gt;Stuff&lt;/p&gt;
-&lt;/details&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 3</title>
-      <link>https://softwaredefinedcoffee.com/project/scenario-3/</link>
-      <pubDate>Wed, 13 Jan 2021 00:52:57 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/project/scenario-3/</guid>
-      <description>&lt;p&gt;Acme Energy currently has 2 data centers, one in Los Angeles and one in Long Beach.
-Most of the hardware is EOS/EOL and they would like to build out two new DCs that are farther away from one another. They want to keep the existing facility in L.A., build the second one in Dallas, and decommission the one in Long Beach within 6 months.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 3</title>
-      <link>https://softwaredefinedcoffee.com/vcdx-panel/scenario-3/</link>
-      <pubDate>Wed, 13 Jan 2021 00:52:57 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/vcdx-panel/scenario-3/</guid>
-      <description>&lt;p&gt;Acme Energy currently has 2 data centers, one in Los Angeles and one in Long Beach.
-Most of the hardware is EOS/EOL and they would like to build out two new DCs that are farther away from one another. They want to keep the existing facility in L.A., build the second one in Dallas, and decommission the one in Long Beach within 6 months.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 4</title>
-      <link>https://softwaredefinedcoffee.com/project/scenario-4/</link>
-      <pubDate>Wed, 13 Jan 2021 00:52:59 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/project/scenario-4/</guid>
-      <description>&lt;p&gt;Acme Inc is a company that makes 3D print figurines. It has grown so much in the last year that their current data center cannot handle the load.
-They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Scenario 4</title>
-      <link>https://softwaredefinedcoffee.com/vcdx-panel/scenario-4/</link>
-      <pubDate>Wed, 13 Jan 2021 00:52:59 -0600</pubDate>
-      <guid>https://softwaredefinedcoffee.com/vcdx-panel/scenario-4/</guid>
-      <description>&lt;p&gt;Acme Inc is a company that makes 3D print figurines. It has grown so much in the last year that their current data center cannot handle the load.
-They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
-</description>
+      <title>Posts</title>
+      <link>https://softwaredefinedcoffee.com/post/</link>
+      <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/</guid>
+      <description></description>
+      
     </item>
     
     <item>
@@ -192,35 +99,23 @@ They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
 &lt;p&gt;I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with &lt;ins&gt;
 &lt;a href=&#34;https://vmweventbroker.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;VEBA&lt;/a&gt;&lt;/ins&gt;, so it can be run when a new host is added to the SDDC.&lt;/p&gt;
 </description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>PowerShell</category>
+      
+        <category>vSAN</category>
+      
+        <category>Stretched Cluster</category>
+      
     </item>
     
     <item>
-      <title>Privacy Policy</title>
-      <link>https://softwaredefinedcoffee.com/privacy/</link>
-      <pubDate>Tue, 16 Jun 2020 00:00:00 +0100</pubDate>
-      <guid>https://softwaredefinedcoffee.com/privacy/</guid>
-      <description>&lt;h2 id=&#34;who-we-are&#34;&gt;Who we are&lt;/h2&gt;
-&lt;p&gt;The website address is &lt;a href=&#34;https://softwaredefinedcoffee.com&#34;&gt;https://softwaredefinedcoffee.com&lt;/a&gt;, owned by Asaf Blubshtein.&lt;/p&gt;
-&lt;h2 id=&#34;comments&#34;&gt;Comments&lt;/h2&gt;
-&lt;p&gt;This website uses a comment system powered by &lt;ins&gt;
-&lt;a href=&#34;https://graphcomment.com/en/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;GraphComment&lt;/a&gt;&lt;/ins&gt;, a company based out of Paris, France. The system doesn’t collect the names of the visitors who leave comments on the site and they remain anonymous in analytics. You can refer to the provider’s &lt;ins&gt;
-&lt;a href=&#34;https://graphcomment.com/en/conditions.html#5&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;privacy policy&lt;/a&gt;&lt;/ins&gt; for more information.&lt;/p&gt;
-&lt;h2 id=&#34;google-analytics&#34;&gt;Google Analytics&lt;/h2&gt;
-&lt;p&gt;This website uses &lt;ins&gt;
-&lt;a href=&#34;https://analytics.google.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google Analytics&lt;/a&gt;&lt;/ins&gt; to collect information required to analyze the traffic of this site. For each visitor to reach the site, Google Analytics collects the following non-personally identifiable information, including but not limited to browser type, version and language, operating system, pages viewed while browsing the site, page access times and referring website address. This information is presented to me as aggregated reports.&lt;/p&gt;
-&lt;p&gt;I have set the &lt;ins&gt;
-&lt;a href=&#34;https://gohugo.io/about/hugo-and-gdpr/#all-privacy-settings&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hugo GDPR options&lt;/a&gt;&lt;/ins&gt; so that your IP address is anonymised within Google Analytics and the “Do Not Track” request is respected. For more information, please refer to Google Analytics &lt;ins&gt;
-&lt;a href=&#34;https://support.google.com/analytics/answer/6004245&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;data privacy and security policy&lt;/a&gt;&lt;/ins&gt;. You may opt-out to Google Analytics service by visiting &lt;ins&gt;
-&lt;a href=&#34;https://tools.google.com/dlpage/gaoptout/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this page&lt;/a&gt;&lt;/ins&gt;.&lt;/p&gt;
-&lt;h2 id=&#34;media&#34;&gt;Media&lt;/h2&gt;
-&lt;p&gt;If you upload images to the website, you should avoid uploading images with embedded location data (EXIF GPS) included. Visitors to the website can download and extract any location data from images on the website.&lt;/p&gt;
-&lt;h2 id=&#34;embedded-content-from-other-websites&#34;&gt;Embedded content from other websites&lt;/h2&gt;
-&lt;p&gt;Articles on this site may include embedded content (e.g. videos, images, articles, etc.). Embedded content from other websites behaves in the exact same way as if the visitor has visited the other website.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Configuring L2VPN High Availability in VMW on AWS</title>
+      <title>Configuring L2VPN High Availability in VMware Cloud on AWS</title>
       <link>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</link>
       <pubDate>Thu, 14 May 2020 22:17:16 -0500</pubDate>
       <guid>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</guid>
@@ -262,7 +157,7 @@ They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
 &lt;li&gt;Check the Secondary API Node checkbox&lt;/li&gt;
 &lt;li&gt;Primary node IP – &lt;strong&gt;192.168.1.240&lt;/strong&gt; This is the management IP of the primary edge deployed previously&lt;/li&gt;
 &lt;li&gt;Primary Node Credentials – If you changed the default username of the primay edge make sure you enter that username. Otherwise, it&amp;rsquo;s &lt;strong&gt;admin&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;Primary node thumbprint – To get the API thumbprint login to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
+&lt;li&gt;Primary node thumbprint – To get the API thumbprint log in to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
 &lt;code&gt; get certificate api thumbprint&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Primay Edge API Thumbprint&#34;&gt;&lt;/p&gt;
@@ -278,10 +173,10 @@ They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
 &lt;p&gt;In the &lt;em&gt;Port&lt;/em&gt; tab you can see that both edges have port named &lt;strong&gt;lrport_0&lt;/strong&gt; with the same IP and Port ID. The GUI doesn&amp;rsquo;t indicate what is the status of the port but this can be found using CLI. To do so login to both edges with the admin user and type the command &lt;code&gt;get logical-router interfaces&lt;/code&gt; and find the port named &lt;strong&gt;lrport_0&lt;/strong&gt;. You can also type &lt;code&gt;get logical-router interface &amp;lt;port id&amp;gt;&lt;/code&gt;. The &lt;strong&gt;admin&lt;/strong&gt; state of both ports should be &lt;strong&gt;up&lt;/strong&gt; but the &lt;strong&gt;op_state&lt;/strong&gt; of the standby edge should be &lt;strong&gt;down&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Command output of the Active edge:
 &lt;img src=&#34;image8.png&#34; alt=&#34;Active Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Command output of the Stnadby edge:
+&lt;p&gt;Command output of the Standby edge:
 &lt;img src=&#34;image9.png&#34; alt=&#34;Standby Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;autonomous-edge-ha-failover-test&#34;&gt;Autonomous Edge HA Failover Test&lt;/h3&gt;
-&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in VMW on AWS. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
+&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in the VMW on AWS SDDC. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;HA Failover Test Ping Downtime&#34;&gt;&lt;/p&gt;
 &lt;p&gt;After powering on the powered-off edge the HA status between the edges was re-established. The secondary edge remains the active edge and the primary will become active again only in case of an additional failure.&lt;/p&gt;
 &lt;p&gt;Secondary edge status:&lt;/p&gt;
@@ -289,6 +184,17 @@ They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
 &lt;p&gt;Primary edge status:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
 </description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>L2VPN</category>
+      
+        <category>Networking</category>
+      
     </item>
     
     <item>
@@ -327,14 +233,11 @@ They’re looking for a solution to mitigate this pressing issue.&lt;/p&gt;
 &lt;p&gt;In conclusion, for very little effort and potentially little (to no) cost, you can greatly improve your working from home experience. If you have any ideas for ways to improve your temporary home/mobile office, would like to share your setup, or have any feedback, please comment or send me an email.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; this post was not sponsored by any of the mentioned products. I am simply sharing my own opinions and experiences.&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://softwaredefinedcoffee.com/vcdx/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://softwaredefinedcoffee.com/vcdx/</guid>
-      <description></description>
+      
+        <category>Work From Home</category>
+      
+        <category>Business Travel</category>
+      
     </item>
     
   </channel>

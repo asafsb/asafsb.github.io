@@ -267,7 +267,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
   
   <meta property="og:site_name" content="Software-Defined Coffee">
   <meta property="og:url" content="https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/">
-  <meta property="og:title" content="Configuring L2VPN High Availability in VMW on AWS | Software-Defined Coffee">
+  <meta property="og:title" content="Configuring L2VPN High Availability in VMware Cloud on AWS | Software-Defined Coffee">
   <meta property="og:description" content="When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-pre2301 networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.
 VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale."><meta property="og:image" content="https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/featured.png">
   <meta property="twitter:image" content="https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/featured.png"><meta property="og:locale" content="en-us">
@@ -301,7 +301,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
     "@type": "WebPage",
     "@id": "https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/"
   },
-  "headline": "Configuring L2VPN High Availability in VMW on AWS",
+  "headline": "Configuring L2VPN High Availability in VMware Cloud on AWS",
   
   "image": [
     "https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/featured.png"
@@ -371,7 +371,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 
 
 
-  <title>Configuring L2VPN High Availability in VMW on AWS | Software-Defined Coffee</title>
+  <title>Configuring L2VPN High Availability in VMware Cloud on AWS | Software-Defined Coffee</title>
 
 </head>
 
@@ -609,7 +609,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
   
   
 <div class="article-container pt-3">
-  <h1>Configuring L2VPN High Availability in VMW on AWS</h1>
+  <h1>Configuring L2VPN High Availability in VMware Cloud on AWS</h1>
 
   
 
@@ -659,7 +659,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
   
   <span class="middot-divider"></span>
   <span class="article-categories">
-    <i class="fas fa-folder mr-1"></i><a href="/categories/vmwonaws/">VMWonAWS</a>, <a href="/categories/vmware-cloud-on-aws/">VMware Cloud on AWS</a>, <a href="/categories/l2vpn/">L2VPN</a>, <a href="/categories/networking/">Networking</a></span>
+    <i class="fas fa-folder mr-1"></i><a href="/categories/vmc-on-aws/">VMC on AWS</a>, <a href="/categories/vmwonaws/">VMWonAWS</a>, <a href="/categories/vmware-cloud-on-aws/">VMware Cloud on AWS</a>, <a href="/categories/l2vpn/">L2VPN</a>, <a href="/categories/networking/">Networking</a></span>
   
 
 </div>
@@ -725,7 +725,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 <li>Check the Secondary API Node checkbox</li>
 <li>Primary node IP – <strong>192.168.1.240</strong> This is the management IP of the primary edge deployed previously</li>
 <li>Primary Node Credentials – If you changed the default username of the primay edge make sure you enter that username. Otherwise, it&rsquo;s <strong>admin</strong></li>
-<li>Primary node thumbprint – To get the API thumbprint login to the primary edge with the <strong>admin</strong> user and type the following command:<br><br>
+<li>Primary node thumbprint – To get the API thumbprint log in to the primary edge with the <strong>admin</strong> user and type the following command:<br><br>
 <code> get certificate api thumbprint</code></li>
 </ul>
 <p><img src="image4.png" alt="Primay Edge API Thumbprint"></p>
@@ -741,10 +741,10 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 <p>In the <em>Port</em> tab you can see that both edges have port named <strong>lrport_0</strong> with the same IP and Port ID. The GUI doesn&rsquo;t indicate what is the status of the port but this can be found using CLI. To do so login to both edges with the admin user and type the command <code>get logical-router interfaces</code> and find the port named <strong>lrport_0</strong>. You can also type <code>get logical-router interface &lt;port id&gt;</code>. The <strong>admin</strong> state of both ports should be <strong>up</strong> but the <strong>op_state</strong> of the standby edge should be <strong>down</strong>.</p>
 <p>Command output of the Active edge:
 <img src="image8.png" alt="Active Autonomous Edge HA lrport Status"></p>
-<p>Command output of the Stnadby edge:
+<p>Command output of the Standby edge:
 <img src="image9.png" alt="Standby Autonomous Edge HA lrport Status"></p>
 <h3 id="autonomous-edge-ha-failover-test">Autonomous Edge HA Failover Test</h3>
-<p>To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in VMW on AWS. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:</p>
+<p>To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in the VMW on AWS SDDC. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:</p>
 <p><img src="image10.png" alt="HA Failover Test Ping Downtime"></p>
 <p>After powering on the powered-off edge the HA status between the edges was re-established. The secondary edge remains the active edge and the primary will become active again only in case of an additional failure.</p>
 <p>Secondary edge status:</p>
@@ -759,6 +759,8 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
 
 
 <div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/vmc-on-aws/">VMC on AWS</a>
   
   <a class="badge badge-light" href="/tags/vmwonaws/">VMWonAWS</a>
   
@@ -783,7 +785,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="https://twitter.com/intent/tweet?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;text=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS" target="_blank" rel="noopener" class="share-btn-twitter">
+        <a href="https://twitter.com/intent/tweet?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;text=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS" target="_blank" rel="noopener" class="share-btn-twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -796,7 +798,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="https://www.facebook.com/sharer.php?u=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;t=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS" target="_blank" rel="noopener" class="share-btn-facebook">
+        <a href="https://www.facebook.com/sharer.php?u=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;t=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS" target="_blank" rel="noopener" class="share-btn-facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
@@ -809,7 +811,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="https://www.linkedin.com/shareArticle?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;title=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS" target="_blank" rel="noopener" class="share-btn-linkedin">
+        <a href="https://www.linkedin.com/shareArticle?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;title=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS" target="_blank" rel="noopener" class="share-btn-linkedin">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
@@ -822,7 +824,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="https://web.whatsapp.com/send?text=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS%20https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+        <a href="https://web.whatsapp.com/send?text=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS%20https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/" target="_blank" rel="noopener" class="share-btn-whatsapp">
           <i class="fab fa-whatsapp"></i>
         </a>
       </li>
@@ -835,7 +837,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="https://reddit.com/submit?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;title=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS" target="_blank" rel="noopener" class="share-btn-reddit">
+        <a href="https://reddit.com/submit?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;title=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS" target="_blank" rel="noopener" class="share-btn-reddit">
           <i class="fab fa-reddit-alien"></i>
         </a>
       </li>
@@ -848,7 +850,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="https://pinterest.com/pin/create/link/?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;description=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS" target="_blank" rel="noopener" class="share-btn-pinterest">
+        <a href="https://pinterest.com/pin/create/link/?url=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/&amp;description=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS" target="_blank" rel="noopener" class="share-btn-pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -861,7 +863,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
       
       <li>
-        <a href="mailto:?subject=Configuring%20L2VPN%20High%20Availability%20in%20VMW%20on%20AWS&amp;body=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/" target="_blank" rel="noopener" class="share-btn-email">
+        <a href="mailto:?subject=Configuring%20L2VPN%20High%20Availability%20in%20VMware%20Cloud%20on%20AWS&amp;body=https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/" target="_blank" rel="noopener" class="share-btn-email">
           <i class="fas fa-envelope"></i>
         </a>
       </li>
@@ -985,7 +987,7 @@ VMW on AWS provides two options for extending an on-prem network to the SDDC - H
       
     
     <li>
-      <a href="https://softwaredefinedcoffee.com/index.xml" target="_blank" rel="noopener">
+      <a href="/index.xml" >
         <i class="fas fa-rss"></i>
       </a>
     </li>

@@ -13,6 +13,15 @@
     </image>
     
     <item>
+      <title>Posts</title>
+      <link>https://softwaredefinedcoffee.com/post/</link>
+      <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
       <title>PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters</title>
       <link>https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/</link>
       <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
@@ -90,10 +99,23 @@
 &lt;p&gt;I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with &lt;ins&gt;
 &lt;a href=&#34;https://vmweventbroker.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;VEBA&lt;/a&gt;&lt;/ins&gt;, so it can be run when a new host is added to the SDDC.&lt;/p&gt;
 </description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>PowerShell</category>
+      
+        <category>vSAN</category>
+      
+        <category>Stretched Cluster</category>
+      
     </item>
     
     <item>
-      <title>Configuring L2VPN High Availability in VMW on AWS</title>
+      <title>Configuring L2VPN High Availability in VMware Cloud on AWS</title>
       <link>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</link>
       <pubDate>Thu, 14 May 2020 22:17:16 -0500</pubDate>
       <guid>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</guid>
@@ -135,7 +157,7 @@
 &lt;li&gt;Check the Secondary API Node checkbox&lt;/li&gt;
 &lt;li&gt;Primary node IP – &lt;strong&gt;192.168.1.240&lt;/strong&gt; This is the management IP of the primary edge deployed previously&lt;/li&gt;
 &lt;li&gt;Primary Node Credentials – If you changed the default username of the primay edge make sure you enter that username. Otherwise, it&amp;rsquo;s &lt;strong&gt;admin&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;Primary node thumbprint – To get the API thumbprint login to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
+&lt;li&gt;Primary node thumbprint – To get the API thumbprint log in to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
 &lt;code&gt; get certificate api thumbprint&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Primay Edge API Thumbprint&#34;&gt;&lt;/p&gt;
@@ -151,10 +173,10 @@
 &lt;p&gt;In the &lt;em&gt;Port&lt;/em&gt; tab you can see that both edges have port named &lt;strong&gt;lrport_0&lt;/strong&gt; with the same IP and Port ID. The GUI doesn&amp;rsquo;t indicate what is the status of the port but this can be found using CLI. To do so login to both edges with the admin user and type the command &lt;code&gt;get logical-router interfaces&lt;/code&gt; and find the port named &lt;strong&gt;lrport_0&lt;/strong&gt;. You can also type &lt;code&gt;get logical-router interface &amp;lt;port id&amp;gt;&lt;/code&gt;. The &lt;strong&gt;admin&lt;/strong&gt; state of both ports should be &lt;strong&gt;up&lt;/strong&gt; but the &lt;strong&gt;op_state&lt;/strong&gt; of the standby edge should be &lt;strong&gt;down&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Command output of the Active edge:
 &lt;img src=&#34;image8.png&#34; alt=&#34;Active Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Command output of the Stnadby edge:
+&lt;p&gt;Command output of the Standby edge:
 &lt;img src=&#34;image9.png&#34; alt=&#34;Standby Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;autonomous-edge-ha-failover-test&#34;&gt;Autonomous Edge HA Failover Test&lt;/h3&gt;
-&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in VMW on AWS. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
+&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in the VMW on AWS SDDC. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;HA Failover Test Ping Downtime&#34;&gt;&lt;/p&gt;
 &lt;p&gt;After powering on the powered-off edge the HA status between the edges was re-established. The secondary edge remains the active edge and the primary will become active again only in case of an additional failure.&lt;/p&gt;
 &lt;p&gt;Secondary edge status:&lt;/p&gt;
@@ -162,6 +184,17 @@
 &lt;p&gt;Primary edge status:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
 </description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>L2VPN</category>
+      
+        <category>Networking</category>
+      
     </item>
     
     <item>
@@ -200,6 +233,11 @@
 &lt;p&gt;In conclusion, for very little effort and potentially little (to no) cost, you can greatly improve your working from home experience. If you have any ideas for ways to improve your temporary home/mobile office, would like to share your setup, or have any feedback, please comment or send me an email.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; this post was not sponsored by any of the mentioned products. I am simply sharing my own opinions and experiences.&lt;/p&gt;
 </description>
+      
+        <category>Work From Home</category>
+      
+        <category>Business Travel</category>
+      
     </item>
     
   </channel>
