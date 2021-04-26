@@ -18,28 +18,73 @@
   </url>
   
   <url>
+    <loc>https://softwaredefinedcoffee.com/project/scenario-4/</loc>
+    <lastmod>2021-01-19T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx/</loc>
+    <lastmod>2021-04-25T19:45:37-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://softwaredefinedcoffee.com/authors/vcdx/</loc>
-    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
   </url>
   
   <url>
     <loc>https://softwaredefinedcoffee.com/authors/</loc>
-    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://softwaredefinedcoffee.com/project/</loc>
-    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+    <loc>https://softwaredefinedcoffee.com/categories/</loc>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/mentoring/</loc>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/mentorship/</loc>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
   </url>
   
   <url>
     <loc>https://softwaredefinedcoffee.com/tags/</loc>
-    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/tags/vcdx/</loc>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/vcdx/</loc>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/vcdx/mentoring-policy/</loc>
+    <lastmod>2021-04-25T19:43:59-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/project/</loc>
+    <lastmod>2021-01-19T00:52:57-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://softwaredefinedcoffee.com/categories/vcdx-mocks/</loc>
+    <lastmod>2021-01-19T00:52:57-06:00</lastmod>
   </url>
   
   <url>
     <loc>https://softwaredefinedcoffee.com/tags/vcdx-dcv-mock/</loc>
-    <lastmod>2021-01-13T00:52:57-06:00</lastmod>
+    <lastmod>2021-01-19T00:52:57-06:00</lastmod>
   </url>
   
   <url>
@@ -49,11 +94,6 @@
   
   <url>
     <loc>https://softwaredefinedcoffee.com/authors/admin/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/categories/</loc>
     <lastmod>2020-07-16T20:44:10-05:00</lastmod>
   </url>
   
@@ -78,22 +118,17 @@
   </url>
   
   <url>
+    <loc>https://softwaredefinedcoffee.com/categories/storage/</loc>
+    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://softwaredefinedcoffee.com/tags/stretched-cluster/</loc>
     <lastmod>2020-07-16T20:44:10-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://softwaredefinedcoffee.com/categories/stretched-cluster/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://softwaredefinedcoffee.com/tags/vmc-on-aws/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/categories/vmc-on-aws/</loc>
     <lastmod>2020-07-16T20:44:10-05:00</lastmod>
   </url>
   
@@ -113,17 +148,7 @@
   </url>
   
   <url>
-    <loc>https://softwaredefinedcoffee.com/categories/vmwonaws/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://softwaredefinedcoffee.com/tags/vsan/</loc>
-    <lastmod>2020-07-16T20:44:10-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/categories/vsan/</loc>
     <lastmod>2020-07-16T20:44:10-05:00</lastmod>
   </url>
   
@@ -144,11 +169,6 @@
   
   <url>
     <loc>https://softwaredefinedcoffee.com/tags/l2vpn/</loc>
-    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://softwaredefinedcoffee.com/categories/l2vpn/</loc>
     <lastmod>2020-05-14T22:17:16-05:00</lastmod>
   </url>
   
@@ -192,7 +212,7 @@
   </url>
   
   <url>
-    <loc>https://softwaredefinedcoffee.com/vcdx-mocks/</loc>
+    <loc>https://softwaredefinedcoffee.com/vcdx/vcdx-mocks/</loc>
   </url>
   
 </urlset>

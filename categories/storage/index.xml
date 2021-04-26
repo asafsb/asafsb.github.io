@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Storage | Software-Defined Coffee</title>
+    <link>https://softwaredefinedcoffee.com/categories/storage/</link>
+      <atom:link href="https://softwaredefinedcoffee.com/categories/storage/index.xml" rel="self" type="application/rss+xml" />
+    <description>Storage</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Thu, 16 Jul 2020 20:44:10 -0500</lastBuildDate>
+    <image>
+      <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
+      <title>Storage</title>
+      <link>https://softwaredefinedcoffee.com/categories/storage/</link>
+    </image>
+    
+    <item>
+      <title>Posts</title>
+      <link>https://softwaredefinedcoffee.com/post/</link>
+      <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/</link>
+      <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/</guid>
+      <description>&lt;p&gt;Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read &lt;ins&gt;
+&lt;a href=&#34;https://cloud.vmware.com/community/2018/05/15/stretched-clusters-vmware-cloud-aws-overview/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this article&lt;/a&gt;&lt;/ins&gt; by &lt;ins&gt;
+&lt;a href=&#34;https://emadyounis.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Emad Younis&lt;/a&gt;&lt;/ins&gt;, &lt;ins&gt;
+&lt;a href=&#34;https://frankdenneman.nl/2018/05/16/stretched-clusters-vmware-cloud-aws-really-big-thing/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this post&lt;/a&gt;&lt;/ins&gt; by &lt;ins&gt;
+&lt;a href=&#34;https://frankdenneman.nl/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Frank Denneman&lt;/a&gt;&lt;/ins&gt; and &lt;ins&gt;
+&lt;a href=&#34;https://blogs.vmware.com/virtualblocks/2018/05/15/relentless-availability-powered-vsan-stretched-clusters-vmware-cloud-aws/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this article&lt;/a&gt;&lt;/ins&gt; by &lt;ins&gt;
+&lt;a href=&#34;https://twitter.com/glnsize&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Glenn Sizemore&lt;/a&gt;&lt;/ins&gt;. In addition, &lt;ins&gt;
+&lt;a href=&#34;https://blogs.vmware.com/virtualblocks/2019/12/03/reduced-pricing-stretched-clusters-vmware-cloud-aws/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;as announced in December 2019&lt;/a&gt;&lt;/ins&gt;, there is a 95% discount on the cross-AZ traffic between the AZs.&lt;/p&gt;
+&lt;p&gt;Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies. The &lt;strong&gt;Failures to tolerate&lt;/strong&gt; settings defines how data is placed in a single AZ, e.g. RAID1 FTT1, while &lt;strong&gt;Site disaster tolerance&lt;/strong&gt; configures how data is placed across the AZs. The workload can either be mirrored across sites or set to a specific site (preferred or non-preferred) with no cross-site protection. Logically, most workloads in a Stretched Cluster will be protected across both sites. However, there may be some cases where vSAN cross-AZ protection is unnecessary, such as workloads that already offer application level redundancy.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Stretched Cluster Storage Policy&#34;&gt;&lt;/p&gt;
+&lt;p&gt;One aspect that is sometimes overlooked is that the storage policies only handle data placement while the placement of compute is handled by DRS. By default, DRS has no awareness of where the storage of a specific workload resides and whether it&amp;rsquo;s replicated across the sites. This can result in a misalignment of the data and compute placement. For example, the storage policy can configure data to be placed in the preferred site while DRS places or moves the VM to a host in the non-preferred one. Another potential scenario is a clustered application that can have both instances running on hosts in the same AZ which increases recovery time in case of an AZ failure.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Stretched Cluster Data and Compute Misalignment&#34;&gt;&lt;/p&gt;
+&lt;p&gt;On-prem, DRS affinity rules are leveraged to make DRS aware of vSAN storage placement. In VMW on AWS the same outcome can be achieved using tags and &lt;ins&gt;
+&lt;a href=&#34;https://blogs.vmware.com/vsphere/2019/08/vmware-cloud-on-aws-policies.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Compute Policies&lt;/a&gt;&lt;/ins&gt;. Basically, two VM-Host compute policies should be created – one for the preferred site and on for the non-preferred site. After that all the hosts in the corresponding fault-domains will need to be tagged. In addition, every time a host is added to the cluster it will need to be tagged otherwise no VMs from these compute policies will be running on the new host. It is possible to create the compute policies manually and then tag all the hosts, but to make the process easier and faster I created a PowerShell module named &lt;ins&gt;
+&lt;a href=&#34;https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MultiAZTagging.psm1&lt;/a&gt;&lt;/ins&gt; to create the policies and tag the hosts.&lt;/p&gt;
+&lt;h3 id=&#34;powershell-module-review&#34;&gt;PowerShell Module Review&lt;/h3&gt;
+&lt;p&gt;The module contains two cmdlets:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;New-MultiAzTags&lt;/strong&gt; - Creates a tag category, tags and compute policies for the preferred and non-preferred sites. By default, all the objects created are prepended with “MultiAZ”. A different string can be specified using the &lt;em&gt;&lt;strong&gt;TagCategoryName&lt;/strong&gt;&lt;/em&gt; parameter.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; – Assigns the appropriate tags to hosts in the cluster. A specific host or cluster can be specified, using either &lt;em&gt;&lt;strong&gt;HostName&lt;/strong&gt;&lt;/em&gt; or &lt;em&gt;&lt;strong&gt;ClusterName&lt;/strong&gt;&lt;/em&gt;, otherwise all the hosts in the SDDC will be tagged. If the right tag exists on the host no action is taken. In case a different value other than “MultiAZ” was used to create the tags it should be specified using the &lt;em&gt;&lt;strong&gt;TagCategoryName&lt;/strong&gt;&lt;/em&gt; parameter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;using-the-multiaz-tagging-module&#34;&gt;Using the MultiAZ Tagging Module&lt;/h3&gt;
+&lt;p&gt;Before I step into how to run the script, I wanted to give you a quick recap of the environment I&amp;rsquo;m going to run it on. This is stretched cluster SDDC deployed across two AZs in Oregon (us-west-2). The AZs are us-west-2a and us-west-2b (preferred fault domain):&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Test Environment Fault Domains&#34;&gt;&lt;/p&gt;
+&lt;p&gt;There’s two VMs in the cluster, &lt;strong&gt;az1&lt;/strong&gt; and &lt;strong&gt;az2&lt;/strong&gt;. At the moment they both run on a host in us-west-2b, which is the preferred site:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Test Environment VM Placement Pre Script&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - &lt;ins&gt;
+&lt;a href=&#34;https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Download the PowerShell module&lt;/a&gt;&lt;/ins&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Import the PowerShell module&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;Import-Module .\MultiAZTagging.psm1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - Connect to a vCenter in a Stretched Cluster SDDC using &lt;em&gt;&lt;strong&gt;Connect-VIServer&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Connect-VIServer&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Connect to the same vCenter using &lt;em&gt;&lt;strong&gt;Connect-CisServer&lt;/strong&gt;&lt;/em&gt; (this step is required to create the compute policies)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Connect-CisServer&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Run the &lt;em&gt;&lt;strong&gt;New-MultiAZTags&lt;/strong&gt;&lt;/em&gt; command to create the tag category, tags and compute policies&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;New-MultiAZTags Command and Output&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As shown by the command&amp;rsquo;s output, the following were created:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A tag category with the name &lt;strong&gt;MultiAZ&lt;/strong&gt;. Only one tag from this category can be assigned to a single host or VM&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;Newly Created Tag Category&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two tags in the &lt;strong&gt;MultiAZ&lt;/strong&gt; tag category - &lt;strong&gt;MultiAZ-Preferred&lt;/strong&gt; and &lt;strong&gt;MultiAZ-Non-Preferred&lt;/strong&gt;. The description of each tag specifies the AZ for that site&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image9.png&#34; alt=&#34;Newly Created Tags&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two compute policies named &lt;strong&gt;MultiAZ-Preferred&lt;/strong&gt; and &lt;strong&gt;MultiAZ-Non-Preferred&lt;/strong&gt;. Each policy is a VM-Host affinity policy which requires the hosts and VMs to be tagged using the matching tags created previously. Note that there are zero hosts/VMs matching this policy as no host/VM has any of the tags assigned&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;Newly Created Compute Policies&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 6&lt;/strong&gt; – Run the &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; command to tag all the hosts in the SDDC&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;Set-MultiAzHostTag Command and Output&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As the command&amp;rsquo;s output shows, each host was assigned a tag that matches their fault domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Tagged vSphere Hosts&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In addition, the compute policies now show that each policy has a single host with a matching tag&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image13.png&#34; alt=&#34;Compute Policies With Matching Hosts&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step-7&lt;/strong&gt; – Assign tags to the appropriate VMs. This can be done manually via the GUI or by using the &lt;strong&gt;New-TagAssignment&lt;/strong&gt; PowerCLI command.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In my environment I tagged VM az1 with the MultiAZ-Preferred tag and VM az2 with the MultiAZ-Non-Preferred tag. Following that both compute policies now show one associated VM in addition to the host&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image14.png&#34; alt=&#34;Compute Policies With Matching Hosts and VMs&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A couple of seconds after I assigned the MultiAZ-Non-Preferred tag to the az2 VM DRS initiated a migration to the host in the non-preferred fault domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image15.png&#34; alt=&#34;Test Environment VM Placement Post Script&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As I mentioned before, there are several use cases I can think of for pinning a VM to a specific site. The most obvious one is a VM that is not replicated across AZs, so it makes sense to have the VM running in the same AZ. The second one is a resilient application, such as AD Domain Controllers, where making sure at least one node is always running. The great thing about compute policies is that they leverage a ‘should’ rule. That means that if an entire AZ fails, for example the non-preferred one, if the VM data is replicated the VMs set to the MultiAZ-non-preferred compute policy will still be powered on the preferred site by vSphere HA. Once the non-preferred AZ comes back up DRS will migrate the VMs to hosts the adhere to the compute policy.&lt;/p&gt;
+&lt;p&gt;I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with &lt;ins&gt;
+&lt;a href=&#34;https://vmweventbroker.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;VEBA&lt;/a&gt;&lt;/ins&gt;, so it can be run when a new host is added to the SDDC.&lt;/p&gt;
+</description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>PowerShell</category>
+      
+        <category>vSAN</category>
+      
+        <category>Stretched Cluster</category>
+      
+    </item>
+    
+    <item>
+      <title>Configuring L2VPN High Availability in VMware Cloud on AWS</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</link>
+      <pubDate>Thu, 14 May 2020 22:17:16 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</guid>
+      <description>&lt;p&gt;When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.&lt;/p&gt;
+&lt;p&gt;VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale. L2 VPN, on the other hand, will provide faster recoverability from an appliance failure, and depending on how many networks are extended, it may use less compute resources on-prem and in the SDDC.&lt;/p&gt;
+&lt;p&gt;Since version 1.9 of VMW on AWS, the NSX-T 2.5 Autonomous Edge is used, which is simpler to configure and more performant than the previous L2 VPN client. In this post I will demonstrate how to configure the HA functionality for the autonomous edge.&lt;/p&gt;
+&lt;p&gt;When configuring a highly avaialable autonomous edge two appliances are deployed. The first edge that is deployed is the Primary edge and the second one is the Secondary edge. The Primary/Secondary value is permanent and simply indicates which edge was deployed first. It doesn&amp;rsquo;t represent which edge is active and handling the L2 VPN. This is shown by Active/Standby high availability status in the summary dashboard.&lt;/p&gt;
+&lt;h3 id=&#34;deploying-the-primary-autonomous-edge-and-configuring-l2-vpn&#34;&gt;Deploying the Primary Autonomous Edge and Configuring L2 VPN&lt;/h3&gt;
+&lt;p&gt;My colleague, &lt;a href=&#34;https://davidwzhang.com/&#34; style=&#34;text-decoration: underline&#34;&gt; David Zhang&lt;/a&gt;, wrote &lt;a href=&#34;https://davidwzhang.com/2020/02/24/setting-up-l2vpn-in-vmc-on-aws/&#34; style=&#34;text-decoration: underline&#34;&gt; a great post&lt;/a&gt; explaining all the necessary steps to deploy L2 VPN on VMW on AWS using the autonomous edge. I followed David&amp;rsquo;s guide to configure L2 VPN and used the following values to set up the primary autonomous edge:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Management IP - &lt;strong&gt;192.168.1.240&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;External Port
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth1,192.168.1.241,24&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;GW – &lt;strong&gt;192.168.1.254&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Internal - &lt;strong&gt;left blank&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;HA
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth3,172.25.53.1,24&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;GW – &lt;strong&gt;172.25.53.254&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Do not fill any other values in the HA section&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Primay Autonomous Edge HA Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The L2 VPN tunnel and network extensions can be created before or after the secondary edge is deployed. There is no significance to the order in which these actions are performed.&lt;/p&gt;
+&lt;h3 id=&#34;deploying-the-secondary-autonomous-edge&#34;&gt;Deploying the Secondary Autonomous Edge&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - Deploy the autonomous edge OVF. Make sure the exact same edge size (medium or large) and networks as the primary controller are selected.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Under network properties, enter the hostname, default gateway, management IP and netmask. Make sure the same subnet as the management network of the primary edge is entered. I used &lt;strong&gt;192.168.1.242&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Secondary Autonomous Edge Management Network Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - The external IP of the secondary edge can be blank. After powering on the appliance it will negotiate with the primary edge and the same external IP as the primary edge will be configured in a disconnected state. As with the primary edge the internal port should be blank:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Secondary Autonomous Edge External/Internal Network Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Configure the HA port&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth3,172.25.53.2,24&lt;/strong&gt; This port should be in the same subnet as the HA port of the primary edge&lt;/li&gt;
+&lt;li&gt;Default GW – &lt;strong&gt;172.25.53.254&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check the Secondary API Node checkbox&lt;/li&gt;
+&lt;li&gt;Primary node IP – &lt;strong&gt;192.168.1.240&lt;/strong&gt; This is the management IP of the primary edge deployed previously&lt;/li&gt;
+&lt;li&gt;Primary Node Credentials – If you changed the default username of the primay edge make sure you enter that username. Otherwise, it&amp;rsquo;s &lt;strong&gt;admin&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Primary node thumbprint – To get the API thumbprint log in to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
+&lt;code&gt; get certificate api thumbprint&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Primay Edge API Thumbprint&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Secondary Autonomous Edge HA Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Make sure the edge VMs are running on different hosts and migrate one if necessary. If DRS is configured on the cluster create a rule to separate the edges.&lt;/p&gt;
+&lt;h3 id=&#34;validating-the-secondary-edge-deployment&#34;&gt;Validating The Secondary Edge Deployment&lt;/h3&gt;
+&lt;p&gt;A couple of minutes after the secondary edge powered on login to both appliances to validate the High Availability status. Under HA Peer Address, each edge should list the opposite edge’s management IP as a peer.&lt;br&gt;
+&lt;strong&gt;Note&lt;/strong&gt; – for some reason the management and peer addresses list a subnet mask of /19 on the web interface even though the correct mask of /24 is configured.&lt;/p&gt;
+&lt;p&gt;The primary edge should have a Primary API server role and an Active HA status. Once the L2 VPN is configured its status will be Up:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Primary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The secondary edge should have a Secondary API server role and Standby under HA status. Once the L2 VPN is configured its status will be Doen:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In the &lt;em&gt;Port&lt;/em&gt; tab you can see that both edges have port named &lt;strong&gt;lrport_0&lt;/strong&gt; with the same IP and Port ID. The GUI doesn&amp;rsquo;t indicate what is the status of the port but this can be found using CLI. To do so login to both edges with the admin user and type the command &lt;code&gt;get logical-router interfaces&lt;/code&gt; and find the port named &lt;strong&gt;lrport_0&lt;/strong&gt;. You can also type &lt;code&gt;get logical-router interface &amp;lt;port id&amp;gt;&lt;/code&gt;. The &lt;strong&gt;admin&lt;/strong&gt; state of both ports should be &lt;strong&gt;up&lt;/strong&gt; but the &lt;strong&gt;op_state&lt;/strong&gt; of the standby edge should be &lt;strong&gt;down&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Command output of the Active edge:
+&lt;img src=&#34;image8.png&#34; alt=&#34;Active Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Command output of the Standby edge:
+&lt;img src=&#34;image9.png&#34; alt=&#34;Standby Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;autonomous-edge-ha-failover-test&#34;&gt;Autonomous Edge HA Failover Test&lt;/h3&gt;
+&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in the VMW on AWS SDDC. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;HA Failover Test Ping Downtime&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After powering on the powered-off edge the HA status between the edges was re-established. The secondary edge remains the active edge and the primary will become active again only in case of an additional failure.&lt;/p&gt;
+&lt;p&gt;Secondary edge status:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;Primary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Primary edge status:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+</description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>L2VPN</category>
+      
+        <category>Networking</category>
+      
+    </item>
+    
+    <item>
+      <title>Tips for a Mobile or Temporary Home Office Setup</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-03-23-equipment-for-temporary-working-from-home/</link>
+      <pubDate>Mon, 23 Mar 2020 19:00:11 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-03-23-equipment-for-temporary-working-from-home/</guid>
+      <description>&lt;p&gt;As more people are working from home due to COVID-19, I’ve seen plenty of remote-working resources and tips being shared across social media and other platforms. The Virtually Speaking Podcast did &lt;a href=&#34;https://www.vspeakingpodcast.com/episodes/147&#34; style=&#34;text-decoration: underline&#34;&gt; a great episode about it&lt;/a&gt; recently. Most of these resources discuss the changes both the employee and employer must make regarding communication, productivity, and culture change. If you are not accustomed to working remotely, then maintaining visual communication and avoiding distractions will take time to get used to and incorporate into your daily routine. While these skills are extremely important and can feel overwhelming when you are thrown into the situation on short notice, it is also essential to keep basic ergonomics in mind.&lt;/p&gt;
+&lt;p&gt;If you’re working from home temporarily, you’ll most likely be using your laptop, possibly while sitting on the sofa or bed. Using a laptop this way for an hour or two to answer some emails may be OK, but spending an entire workday like that can be an issue. I’m not an ergonomics expert, but I do know that the basics are keeping the monitor at eye level and the mouse and keyboard at a position that will allow your forearms to be as parallel to the floor as possible. The way laptops are designed forces you to bend your back and neck which, over time, will cause fatigue and discomfort.&lt;/p&gt;
+&lt;p&gt;I’ve been working remotely for about five years, so I’ve had a lot of time to fine-tune my home office setup. Some of it was provided by my employer (external monitor, docking station) and some were purchased by me throughout the years (chair, desk, ergonomic keyboard and mouse). If your employer can provide you with some equipment or if you already have a home office setup - great. If you don’t, hopefully I can share some tips that will help you improve your temporary home office experience.&lt;/p&gt;
+&lt;p&gt;Even though I’m working remotely, travel has always been a big part of my current and previous roles. Whether it was visiting a customer, attending a training, or meetings at the company HQ, I’d find myself working solely with a laptop for longer than I’d prefer. Starting with purchasing an external mouse, I eventually acquired enough items to travel with a complete mobile office. This setup is lightweight, doesn’t take up a lot of space, and doesn’t break the bank. If you travel for work, you’ll also be able to repurpose it for that in the future. Here’s my travel setup sitting on my dining room table (which to be completely honest, functions as my desk when we have too many guests staying over):
+&lt;img src=&#34;IMG_0636.jpg&#34; alt=&#34;Mobile office setup&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;1-coffee&#34;&gt;1. Coffee&lt;/h3&gt;
+&lt;p&gt;I mean, can you really work without it?!&lt;/p&gt;
+&lt;h3 id=&#34;2-laptop-stand&#34;&gt;2. Laptop Stand&lt;/h3&gt;
+&lt;p&gt;This is a must for positioning your laptop’s monitor at eye level. An adjustable stand is preferable to ensure you can adjust it according to your work surface and your height. I have two laptop stands - a stationary one at my desk and one for travel.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;IMG_0645.jpg&#34; alt=&#34;Laptop stands&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The two stands in the photo are the Roost (on the left) and iLevel2 by RainDesign (on the right):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.therooststand.com/&#34; style=&#34;text-decoration: underline&#34;&gt;Roost Laptop Stand&lt;/a&gt; - I love this stand. It started as a Kickstarter project and an updated version came out several years ago. That team did a great job on the product - it’s lightweight while still being very sturdy. It also has three height options. I’m 5’7” / 170 cm and I use the middle setting, so it is suitable for taller or shorter people as well. There are some cheaper imitations out there (Nextand is the most obvious one) which should also get the job done.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/Rain-Design-12031-Adjustable-Notebook/dp/B00LSU4QD8&#34; style=&#34;text-decoration: underline&#34;&gt;Rain Design iLevel2&lt;/a&gt; - I use this stand at my desk and it’s pretty nice. It’s obviously not as mobile, but it looks good and is cheaper than the Roost. My only complaint is that even at the maximum setting, the laptop doesn’t reach eye level. For me, this is not the end of the world since I use it to complement my external monitor. However, if it’s your main screen and you are my height or taller, I’d consider a different option.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And then there’s the third option, which I used at hotel rooms while traveling prior to purchasing the Roost stand - a stack of books/drawers/pillows. It’s not the most elegant or sophisticated, but it costs $0, you don’t have to wait for shipping, and finally - it’s your home office, so no co-worker can judge you on your low-tech frugal setup.&lt;/p&gt;
+&lt;h3 id=&#34;3-external-mouse-and-keyboard&#34;&gt;3. External Mouse and Keyboard&lt;/h3&gt;
+&lt;p&gt;Using a laptop stand pretty much forces you to use an external mouse and keyboard, otherwise your forearms and wrists will end up at a really weird angle that will cause more harm than using the laptop on a desk. Of course, an ergonomic set is better, but most of us probably have a mouse and keyboard lying around somewhere. If not, a simple wired or even wireless mouse and keyboard combo can be purchased for $20 or less.&lt;/p&gt;
+&lt;p&gt;The mouse I use for travel is a very simple HP mouse that I bought eight years ago while living in France. I picked it up at a local tech store for about 5€. There’s nothing fancy about it other than the fact that it’s the perfect size to just stick in a bag and not take up a lot of space.&lt;/p&gt;
+&lt;p&gt;The keyboard I have is a &lt;a href=&#34;https://www.amazon.com/iClever-Rechargeable-Bluetooth-Smartphones-IC-BK06/dp/B01JA6HG88/&#34; style=&#34;text-decoration: underline&#34;&gt;Bluetooth keyboard by iClever&lt;/a&gt;. It is an ergonomic portable keyboard, which is a really hard thing to find. It can connect to up to three devices and works with Windows, Mac, iOS and Android. Plus, when folded it takes only a little more space than my iPhone X:
+&lt;img src=&#34;IMG_0621.jpg&#34; alt=&#34;iClever keyboard folded&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;4-headsets-optional&#34;&gt;4. Headsets (Optional)&lt;/h3&gt;
+&lt;p&gt;These are not a must but will make your working from home experience a lot easier.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Headset with noise cancelling microphone&lt;/strong&gt; - Even though you’re at home, noise can still be an issue. My previous apartment was on a main street not far from a hospital. At least five times a day, police cars, ambulances and fire trucks would pass next to my building with sirens blazing. I got used to it very quickly, but it did tend to startle people on conference calls and make them think I was living in a war zone. After using the basic iPhone headset for several years, I purchased the &lt;a href=&#34;https://www.amazon.com/Plantronics-VOYAGER-5200-UC-206110-01-Advanced-Bluetooth/dp/B01G49I2FA&#34; style=&#34;text-decoration: underline&#34;&gt;Plantronics 5200&lt;/a&gt; following a recommendation from one of my customers. It’s designed to be a travel headset, but I use it all the time as my main headset. It integrates with Zoom, Teams and Skype, plus the noise cancellation technology on the microphone is excellent. I have had calls while walking down a windy and busy Chicago street and those on the call had no problems hearing me.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Noise cancelling headphones&lt;/strong&gt; - As mentioned, the noise at home can be a real distraction, especially if you do not live alone. I use over-the-ear Bluetooth headphones that I picked up from Amazon for $40 two years ago. They don’t have active noise cancellation, but they tune out enough noise for me to focus and still hear if someone calls to me from the other room.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;IMG_0626.jpg&#34; alt=&#34;Headset and headphones&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In conclusion, for very little effort and potentially little (to no) cost, you can greatly improve your working from home experience. If you have any ideas for ways to improve your temporary home/mobile office, would like to share your setup, or have any feedback, please comment or send me an email.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; this post was not sponsored by any of the mentioned products. I am simply sharing my own opinions and experiences.&lt;/p&gt;
+</description>
+      
+        <category>Work From Home</category>
+      
+        <category>Business Travel</category>
+      
+    </item>
+    
+  </channel>
+</rss>
