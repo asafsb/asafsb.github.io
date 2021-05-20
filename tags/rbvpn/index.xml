@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RBVPN | Software-Defined Coffee</title>
+    <link>https://softwaredefinedcoffee.com/tags/rbvpn/</link>
+      <atom:link href="https://softwaredefinedcoffee.com/tags/rbvpn/index.xml" rel="self" type="application/rss+xml" />
+    <description>RBVPN</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Wed, 19 May 2021 01:00:11 +0000</lastBuildDate>
+    <image>
+      <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
+      <title>RBVPN</title>
+      <link>https://softwaredefinedcoffee.com/tags/rbvpn/</link>
+    </image>
+    
+    <item>
+      <title>Configuring Route Based VPN Between VMware Cloud on AWS and pfSense</title>
+      <link>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</link>
+      <pubDate>Wed, 19 May 2021 01:00:11 +0000</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</guid>
+      <description>&lt;p&gt;For certain tests and demos, I occasionally need to connect my home lab to our VMW on AWS SDDC. Since I can&amp;rsquo;t justify the cost of a Direct Connect port to my home lab my options are either route or policy-based VPN. Unless there&amp;rsquo;s a specific use-case for policy-based, route-based VPN (RBVPN) is definitely &lt;u&gt;
+&lt;a href=&#34;https://vmc.techzone.vmware.com/vmc-arch/docs/network/vmc-aws-ipsec-vpn#&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;my preferred method&lt;/a&gt;&lt;/u&gt;.&lt;/p&gt;
+&lt;p&gt;Currently, I&amp;rsquo;m using a pfSense router/firewall for my home lab, which meant the first step was to select which BGP package I should install. At first, I was going to configure BGP using OpenBGPD as it seemed more common, but I decided to use FRR instead. The main reason was that at the time I was also studying for the NSX-V VCAP Deploy exam and wanted to be able to leverage both OSPF and BGP. Another reason was that it seems as though FRR is being recommended over OpenBGPD and Quagga OSPF as pfSense&amp;rsquo;s dynamic routing package of choice.&lt;/p&gt;
+&lt;h3 id=&#34;planning-and-pre-requisites&#34;&gt;Planning and Pre-requisites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;There are certain values in a RBVPN that have to be identical in both sites and some that must be different for connectivity to work:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Setting/Value&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;th&gt;Values I used&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Local public IP&lt;/td&gt;
+&lt;td&gt;The public IP associated with the pfSense. If it&amp;rsquo;s behind a NAT, note the private IP as well&lt;/td&gt;
+&lt;td&gt;&lt;u&gt;
+&lt;a href=&#34;https://www.whatsmyip.org/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;My public IP&lt;/a&gt;&lt;/u&gt; and 192.168.1.254&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Remote public IP&lt;/td&gt;
+&lt;td&gt;The VPN Public IP of the SDDC&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Local BGP ASN&lt;/td&gt;
+&lt;td&gt;The ASN that will be assigned to pfSense&lt;/td&gt;
+&lt;td&gt;65025&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SDDC BGP ASN&lt;/td&gt;
+&lt;td&gt;The ASN that will be assigned to the SDDC&amp;rsquo;s BGP instance. Must be different than the local BGP ASN&lt;/td&gt;
+&lt;td&gt;65001&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IPsec IKE version (for phase 1 and 2)&lt;/td&gt;
+&lt;td&gt;Select a setting that is &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. The setting must be identical in both sites for an IPsec session to establish&lt;/td&gt;
+&lt;td&gt;IKEv2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IPsec encryption parameters (for phase 1 and 2)&lt;/td&gt;
+&lt;td&gt;Select values that are &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. Values must be identical in both sites for an IPsec session to establish&lt;/td&gt;
+&lt;td&gt;AES GCM 256, 128-bit key, SHA256, DH14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Pre-shared key for IPsec&lt;/td&gt;
+&lt;td&gt;Will be used to authenticate the IPsec session between pfSense and the SDDC&lt;/td&gt;
+&lt;td&gt;Generated using pfSense&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Local BGP IP&lt;/td&gt;
+&lt;td&gt;An IP in a network that will only be used to establish a BGP neighbor relationship between pfSense and the SDDC. Doesn&amp;rsquo;t need to be large or routable, preferably in the 169.254.0.0 range&lt;/td&gt;
+&lt;td&gt;169.254.225.25/30&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SDDC BGP IP&lt;/td&gt;
+&lt;td&gt;An IP in the same subnet as the local BGP IP&lt;/td&gt;
+&lt;td&gt;169.254.225.26/30&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Configure port forwarding (Optional)&lt;/strong&gt; - If your pfSense is not directly connected to the internet you&amp;rsquo;ll need to enable port forwarding in your public-facing router/firewall and forward UDP port 4500 to your pfSense&amp;rsquo;s private IP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;uin-vmw-on-awsu&#34;&gt;&lt;u&gt;In VMW on AWS:&lt;/u&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Note the VPN public IP&lt;/strong&gt; - In the SDDC you&amp;rsquo;d like to connect to, navigate to the &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; section. The &lt;strong&gt;Overview&lt;/strong&gt; tab should have the &lt;strong&gt;VPN Public IP&lt;/strong&gt; listed:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;VPN Public IP&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Note/change the VMW on AWS ASN&lt;/strong&gt; - The default ASN is 65000. To validate or edit the ASN, within the &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; section, navigate to &lt;strong&gt;VPN&lt;/strong&gt; &amp;gt; &lt;strong&gt;Route Based&lt;/strong&gt;. Click &lt;strong&gt;Edit Local ASN&lt;/strong&gt;. You can now change the number to an ASN that is unique in your BGP environment. In this configuration I will use &lt;strong&gt;65001&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Edit VMW on AWS ASN&#34;&gt;
+&lt;img src=&#34;image3.png&#34; alt=&#34;VMW on AWS ASN&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;uin-pfsenseu&#34;&gt;&lt;u&gt;In pfSense:&lt;/u&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Allow APIPA traffic (optional)&lt;/strong&gt; - By default VMW on AWS allows RBVPN BGP sessions to be formed using the 169.254.0.0/16 range. pfSense drops that range by default. To configure pfSense to allow that range navigate to &lt;strong&gt;System&lt;/strong&gt; &amp;gt; &lt;strong&gt;Advanced&lt;/strong&gt;. Go to the &lt;strong&gt;Firewall &amp;amp; NAT&lt;/strong&gt; tab and check &lt;strong&gt;Allow APIPA traffic&lt;/strong&gt;. If APIPA traffic is not allowed the range that will be used for the BGP session should be permitted in the Compute Gateway firewall in VMW on AWS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Allow APIPA traffic&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Install FRR&lt;/strong&gt; - FRR will add dynamic routing capabilities to pfSense using BGP and OSPF. To install FRR navigate to &lt;strong&gt;System&lt;/strong&gt; &amp;gt; &lt;strong&gt;Package Manager&lt;/strong&gt; and select the &lt;strong&gt;Available Packages&lt;/strong&gt; tab. Search for &lt;strong&gt;FRR&lt;/strong&gt; and click &lt;strong&gt;Install&lt;/strong&gt;. Once the installation is finished successfully  FRR will appear under &lt;strong&gt;Installed Packages&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;FRR Installation&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;pfsense-configuration&#34;&gt;pfSense configuration&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - Conigure IPsec Tunnel&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;VPN&lt;/strong&gt; &amp;gt; &lt;strong&gt;IPsec&lt;/strong&gt; and click &lt;strong&gt;Add P1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Configure the following phase 1 settings (these settings will have to match when configured in VMW on AWS):
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Key Exchange version&lt;/strong&gt; - IKEv1 or IKEv2. I selected IKEv2&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Interface&lt;/strong&gt; - the WAN interface of your pfSense&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Gateway&lt;/strong&gt; - the &lt;strong&gt;VPN Public IP&lt;/strong&gt; of the SDDC&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pre-Shared Key&lt;/strong&gt; - enter a shared key or generate one&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Encryption Algorithm&lt;/strong&gt; - select encryption the desired values that are &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. I selected the following:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Algorithm&lt;/strong&gt; - AES256-GCM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key length&lt;/strong&gt; - 128&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hash&lt;/strong&gt; - SHA256&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DH Group&lt;/strong&gt; - 14 (2048 bit)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;On the newly created IPsec tunnel, Click &lt;strong&gt;Show Phase 2 Entries&lt;/strong&gt; and then &lt;strong&gt;Add P2&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Configure the following phase 2 settings:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mode&lt;/strong&gt; - Routed (VTI)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Local Network&lt;/strong&gt; - &lt;strong&gt;Address&lt;/strong&gt; (not &lt;em&gt;Network&lt;/em&gt;!). Under &lt;strong&gt;Address&lt;/strong&gt; enter the local BGP IP designated for pfSense. I used &lt;strong&gt;169.254.225.25&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Network&lt;/strong&gt; - &lt;strong&gt;Address&lt;/strong&gt; (not &lt;em&gt;Network&lt;/em&gt;!). Under &lt;strong&gt;Address&lt;/strong&gt; enter the remote BGP IP designated for VMWonAWS. I used &lt;strong&gt;169.254.225.26&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Similar to the encryption configuration in Phase 1, select encryption values that are &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. I selected similar values to the ones I set in Phase 1:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Algorithm&lt;/strong&gt; - AES256-GCM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key length&lt;/strong&gt; - 128&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hash&lt;/strong&gt; - SHA256&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PFS Key Group&lt;/strong&gt; - 14 (2048 bit)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Validate both Phase 1 and Phase 2 configurations and click &lt;strong&gt;Apply Changes&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image6_hu2c75ae82bc5d70677c26f83e2685b1d8_58443_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image6_hu2c75ae82bc5d70677c26f83e2685b1d8_58443_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;IPsec Configuration&#34; width=&#34;1148&#34; height=&#34;347&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Assign the IPsec interface. This step enables the IPsec tunnel created in the previous step as a virtual interface for pfSense, so it can be leveraged by FRR to establish a BGP connection.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Interfaces&lt;/strong&gt; &amp;gt; &lt;strong&gt;Assignments&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;At the bottom, under &lt;strong&gt;Available network ports&lt;/strong&gt;, select the newly created IPsec tunnel and click &lt;strong&gt;Add&lt;/strong&gt;
+&lt;img src=&#34;image7.png&#34; alt=&#34;IPsec interface&#34;&gt;&lt;/li&gt;
+&lt;li&gt;The new interface is added as &lt;strong&gt;OPT#&lt;/strong&gt;. In my case it was added as OPT4. Click the interface name&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;Enable Interface&lt;/strong&gt; and provide a &lt;strong&gt;Description&lt;/strong&gt; to make it easier to identify the interface&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;IPsec Interface enablement&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - Allow traffic via the IPsec interface. By default pfSense will block any traffic on newly added interfaces. For the BGP connection to establish and for traffic to flow several allow rules should be opened.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Firewall&lt;/strong&gt; &amp;gt; &lt;strong&gt;Rules&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Select the &lt;strong&gt;IPsec&lt;/strong&gt; interfaces&lt;/li&gt;
+&lt;li&gt;Create inbound and outbound rules that will match the traffic you want to allow communicating over the RBVPN. Don&amp;rsquo;t forget to also enable the BGP communication between pfSense and the SDDC. For this scenario I&amp;rsquo;m going to allow all traffic&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image9.png&#34; alt=&#34;IPsec Firewall Rules&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Configure FRR. Now that IPsec is configured on the pfSense side, we are ready to configure FRR and BGP.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Services&lt;/strong&gt; &amp;gt; &lt;strong&gt;FRR Global/Zebra&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;Enable FRR&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set the &lt;strong&gt;Default Router ID&lt;/strong&gt;. You can specify it individually per routing protocol. I set it to the pfSense&amp;rsquo;s BGP IP, &lt;strong&gt;169.254.225.25&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set a &lt;strong&gt;Master Password&lt;/strong&gt;. This password is only used by FRRs internal daemons, so set it to whatever you want&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;FRR Global Settings&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Configure FRR&amp;rsquo;s BGP. Note that I&amp;rsquo;m not going into the (many) configuration options possible in BGP. This is just going to be a minimal setup to enable communication and route exchanges.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Services&lt;/strong&gt; &amp;gt; &lt;strong&gt;FRR BGP&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;Enable BGP Routing&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set the &lt;strong&gt;Local AS&lt;/strong&gt; to a value that is different than the AS in VMW on AWS. In my lab it is set to &lt;strong&gt;65025&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Specify the &lt;strong&gt;Router ID&lt;/strong&gt; if you&amp;rsquo;d like it to be different than the one specified in &lt;strong&gt;step 4&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;FRR BGP Settings&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Under &lt;strong&gt;Network Distribution&lt;/strong&gt;, you can control what routes are advertised via BGP. Since I didn&amp;rsquo;t want all of my lab and home subnets to be advertised, I decided to specify the ones I wanted to use for testing purposes&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;BGP Network Distribution&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 6&lt;/strong&gt; - Configure the SDDC&amp;rsquo;s Edge as a BGP neighbor. Similar to the previous step, there&amp;rsquo;s a lot of BGP options here, but I&amp;rsquo;m just going to cover the basic to establish connectivity.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the &lt;strong&gt;FRR BGP&lt;/strong&gt; view, select the &lt;strong&gt;Neighbors&lt;/strong&gt; tab and click &lt;strong&gt;Add&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Under &lt;strong&gt;Name/Address&lt;/strong&gt; set the remote BGP IP of the SDDC. In my case it&amp;rsquo;s &lt;strong&gt;169.254.225.26&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set a &lt;strong&gt;Description&lt;/strong&gt; to easily identify this neighbor&lt;/li&gt;
+&lt;li&gt;Set the &lt;strong&gt;Remote AS&lt;/strong&gt; to the ASN configured in VMW on AWS&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image13.png&#34; alt=&#34;BGP neighbor Settings&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;vmw-on-aws-configuration&#34;&gt;VMW on AWS configuration&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 7&lt;/strong&gt; - Configure RBVPN in VMW on AWS&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; &amp;gt; &lt;strong&gt;VPN&lt;/strong&gt;. By default you should be in the &lt;strong&gt;Route Based&lt;/strong&gt; tab&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Add VPN&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Configure the following in the top section:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Name&lt;/strong&gt; - Descriptive name to identify the VPN&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Local IP Address&lt;/strong&gt; - Select the &lt;strong&gt;Public IP&lt;/strong&gt; from the drop down list. &lt;strong&gt;Note&lt;/strong&gt;: this cannot be changed later&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Public IP Address&lt;/strong&gt; - The public IP where the pfSense is reachable&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Local IP/Prefix Length&lt;/strong&gt; - Enter the SDDC&amp;rsquo;s BGP IP and prefex length. I used &lt;strong&gt;169.254.225.26/30&lt;/strong&gt;. &lt;strong&gt;Note&lt;/strong&gt;: this cannot be changed later&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Remote IP&lt;/strong&gt; - Enter the pfSense BGP IP. I used &lt;strong&gt;169.254.225.25&lt;/strong&gt;. &lt;strong&gt;Note&lt;/strong&gt;: this cannot be changed later&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Neighbor ASN&lt;/strong&gt; - Enter the ASN configured in pfSense. I used &lt;strong&gt;65025&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Preshared Key&lt;/strong&gt; - Enter the same pre-shared key entered in &lt;strong&gt;step 1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Private IP&lt;/strong&gt; - If the pfSense is behind a NAT, enter the private IP of the pfSense. I used &lt;strong&gt;192.168.1.254&lt;/strong&gt;, which is the WAN interface&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Configure the following in the bottom section (all values should correlate to the IPsec config in &lt;strong&gt;step 1&lt;/strong&gt;):
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;IKE Encryption&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 algorithm. I configured &lt;strong&gt;AES GCM 256&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IKE Digest Algorithm&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 hash. I configured &lt;strong&gt;None&lt;/strong&gt;, as this is required in VMWonAWS &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5AF45CE6-FA53-45C0-83E5-25F8E3A055E9.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;when using GCM&lt;/a&gt;&lt;/u&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IKE Type&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 key exchange version. I configured &lt;strong&gt;IKE V2&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Diffie Hellman&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 DH Group. I configured &lt;strong&gt;14&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tunnel Encryption&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 2 algorithm. I configured &lt;strong&gt;AES GCM 256&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tunnel Digest Algorithm&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 2 hash. I configured &lt;strong&gt;None&lt;/strong&gt;, as this is required in VMWonAWS &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5AF45CE6-FA53-45C0-83E5-25F8E3A055E9.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;when using GCM&lt;/a&gt;&lt;/u&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Perfect Forward Secrecy&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 2 PFS. I set it to &lt;strong&gt;Enabled&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image14_hu9ef110cd4d0a67a897102658570c3244_76439_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image14_hu9ef110cd4d0a67a897102658570c3244_76439_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;VMW on AWS RBVPN settings&#34; width=&#34;1222&#34; height=&#34;460&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 8 (Optional)&lt;/strong&gt; - Allow the BGP IPs in the Gateway Firewall if a they are not in the 169.254.0.0/16 range&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; &amp;gt; &lt;strong&gt;Gateway Firewall&lt;/strong&gt;. By default you should be in the &lt;strong&gt;Compute Gateway&lt;/strong&gt; tab&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;+ Add Rule&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Make sure the &lt;strong&gt;Sources&lt;/strong&gt; and &lt;strong&gt;Destination&lt;/strong&gt; are the subnet/IPs that are used by both BGP interfaces. Under &lt;strong&gt;Applied To&lt;/strong&gt; apply the rule only to the &lt;strong&gt;VPN Tunnel Interface&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Publish&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;validate-connectivity&#34;&gt;Validate Connectivity&lt;/h3&gt;
+&lt;p&gt;At this point the IPsec tunnels should be up and the BGP session should establish and extend routes. We can validate connectivity in VMWonAWS and in pfSense.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;In VMW on AWS&lt;/strong&gt; - navigate to &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; &amp;gt; &lt;strong&gt;VPN&lt;/strong&gt;. In the &lt;strong&gt;Route Based&lt;/strong&gt; tab verify that both the &lt;strong&gt;Status&lt;/strong&gt; and &lt;strong&gt;BGP Remote IP&lt;/strong&gt; are showing a green circle. You can also expand the view and view the learned and advertised routes.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image15.png&#34; alt=&#34;VMW on AWS RBVPN settings - Established Tunnel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;In pfSense&lt;/strong&gt; - navigate to &lt;strong&gt;Status&lt;/strong&gt; &amp;gt; &lt;strong&gt;FRR&lt;/strong&gt;. In the &lt;strong&gt;BGP&lt;/strong&gt; tab there are several places where you can validate the established connection. The main ones are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Under the &lt;strong&gt;BGP Routes&lt;/strong&gt; you can view the learned routes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Neighbors&lt;/strong&gt; will present a lot of information about the neighbor connection. The important thing is to make sure the &lt;strong&gt;BGP State&lt;/strong&gt; is &lt;strong&gt;Established&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image16.png&#34; alt=&#34;FRR BGP Neighbor Status&#34;&gt;&lt;/p&gt;
+</description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>pfSense</category>
+      
+        <category>VPN</category>
+      
+        <category>RBVPN</category>
+      
+        <category>Route Based VPN</category>
+      
+    </item>
+    
+    <item>
+      <title>Posts</title>
+      <link>https://softwaredefinedcoffee.com/post/</link>
+      <pubDate>Wed, 19 May 2021 01:00:11 +0000</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/</link>
+      <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/</guid>
+      <description>&lt;p&gt;Stretched Clusters provide the ability to protect an SDDC running in VMware Cloud on AWS from an Availability Zone failure. If you would like to know more about the Stretched Clusters capability, sometimes referred to as Multi AZ SDDCs in VMW on AWS, make sure you read &lt;ins&gt;
+&lt;a href=&#34;https://cloud.vmware.com/community/2018/05/15/stretched-clusters-vmware-cloud-aws-overview/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this article&lt;/a&gt;&lt;/ins&gt; by &lt;ins&gt;
+&lt;a href=&#34;https://emadyounis.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Emad Younis&lt;/a&gt;&lt;/ins&gt;, &lt;ins&gt;
+&lt;a href=&#34;https://frankdenneman.nl/2018/05/16/stretched-clusters-vmware-cloud-aws-really-big-thing/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this post&lt;/a&gt;&lt;/ins&gt; by &lt;ins&gt;
+&lt;a href=&#34;https://frankdenneman.nl/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Frank Denneman&lt;/a&gt;&lt;/ins&gt; and &lt;ins&gt;
+&lt;a href=&#34;https://blogs.vmware.com/virtualblocks/2018/05/15/relentless-availability-powered-vsan-stretched-clusters-vmware-cloud-aws/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this article&lt;/a&gt;&lt;/ins&gt; by &lt;ins&gt;
+&lt;a href=&#34;https://twitter.com/glnsize&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Glenn Sizemore&lt;/a&gt;&lt;/ins&gt;. In addition, &lt;ins&gt;
+&lt;a href=&#34;https://blogs.vmware.com/virtualblocks/2019/12/03/reduced-pricing-stretched-clusters-vmware-cloud-aws/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;as announced in December 2019&lt;/a&gt;&lt;/ins&gt;, there is a 95% discount on the cross-AZ traffic between the AZs.&lt;/p&gt;
+&lt;p&gt;Just like a standard vSAN cluster, storage consumption in a Stretched Cluster is managed using storage policies. The &lt;strong&gt;Failures to tolerate&lt;/strong&gt; settings defines how data is placed in a single AZ, e.g. RAID1 FTT1, while &lt;strong&gt;Site disaster tolerance&lt;/strong&gt; configures how data is placed across the AZs. The workload can either be mirrored across sites or set to a specific site (preferred or non-preferred) with no cross-site protection. Logically, most workloads in a Stretched Cluster will be protected across both sites. However, there may be some cases where vSAN cross-AZ protection is unnecessary, such as workloads that already offer application level redundancy.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Stretched Cluster Storage Policy&#34;&gt;&lt;/p&gt;
+&lt;p&gt;One aspect that is sometimes overlooked is that the storage policies only handle data placement while the placement of compute is handled by DRS. By default, DRS has no awareness of where the storage of a specific workload resides and whether it&amp;rsquo;s replicated across the sites. This can result in a misalignment of the data and compute placement. For example, the storage policy can configure data to be placed in the preferred site while DRS places or moves the VM to a host in the non-preferred one. Another potential scenario is a clustered application that can have both instances running on hosts in the same AZ which increases recovery time in case of an AZ failure.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Stretched Cluster Data and Compute Misalignment&#34;&gt;&lt;/p&gt;
+&lt;p&gt;On-prem, DRS affinity rules are leveraged to make DRS aware of vSAN storage placement. In VMW on AWS the same outcome can be achieved using tags and &lt;ins&gt;
+&lt;a href=&#34;https://blogs.vmware.com/vsphere/2019/08/vmware-cloud-on-aws-policies.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Compute Policies&lt;/a&gt;&lt;/ins&gt;. Basically, two VM-Host compute policies should be created – one for the preferred site and on for the non-preferred site. After that all the hosts in the corresponding fault-domains will need to be tagged. In addition, every time a host is added to the cluster it will need to be tagged otherwise no VMs from these compute policies will be running on the new host. It is possible to create the compute policies manually and then tag all the hosts, but to make the process easier and faster I created a PowerShell module named &lt;ins&gt;
+&lt;a href=&#34;https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MultiAZTagging.psm1&lt;/a&gt;&lt;/ins&gt; to create the policies and tag the hosts.&lt;/p&gt;
+&lt;h3 id=&#34;powershell-module-review&#34;&gt;PowerShell Module Review&lt;/h3&gt;
+&lt;p&gt;The module contains two cmdlets:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;New-MultiAzTags&lt;/strong&gt; - Creates a tag category, tags and compute policies for the preferred and non-preferred sites. By default, all the objects created are prepended with “MultiAZ”. A different string can be specified using the &lt;em&gt;&lt;strong&gt;TagCategoryName&lt;/strong&gt;&lt;/em&gt; parameter.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; – Assigns the appropriate tags to hosts in the cluster. A specific host or cluster can be specified, using either &lt;em&gt;&lt;strong&gt;HostName&lt;/strong&gt;&lt;/em&gt; or &lt;em&gt;&lt;strong&gt;ClusterName&lt;/strong&gt;&lt;/em&gt;, otherwise all the hosts in the SDDC will be tagged. If the right tag exists on the host no action is taken. In case a different value other than “MultiAZ” was used to create the tags it should be specified using the &lt;em&gt;&lt;strong&gt;TagCategoryName&lt;/strong&gt;&lt;/em&gt; parameter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;using-the-multiaz-tagging-module&#34;&gt;Using the MultiAZ Tagging Module&lt;/h3&gt;
+&lt;p&gt;Before I step into how to run the script, I wanted to give you a quick recap of the environment I&amp;rsquo;m going to run it on. This is stretched cluster SDDC deployed across two AZs in Oregon (us-west-2). The AZs are us-west-2a and us-west-2b (preferred fault domain):&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Test Environment Fault Domains&#34;&gt;&lt;/p&gt;
+&lt;p&gt;There’s two VMs in the cluster, &lt;strong&gt;az1&lt;/strong&gt; and &lt;strong&gt;az2&lt;/strong&gt;. At the moment they both run on a host in us-west-2b, which is the preferred site:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Test Environment VM Placement Pre Script&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - &lt;ins&gt;
+&lt;a href=&#34;https://github.com/asafsb/sdcoffee-scripts/tree/master/MultiAZ-Tagging&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Download the PowerShell module&lt;/a&gt;&lt;/ins&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Import the PowerShell module&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;Import-Module .\MultiAZTagging.psm1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - Connect to a vCenter in a Stretched Cluster SDDC using &lt;em&gt;&lt;strong&gt;Connect-VIServer&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Connect-VIServer&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Connect to the same vCenter using &lt;em&gt;&lt;strong&gt;Connect-CisServer&lt;/strong&gt;&lt;/em&gt; (this step is required to create the compute policies)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Connect-CisServer&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Run the &lt;em&gt;&lt;strong&gt;New-MultiAZTags&lt;/strong&gt;&lt;/em&gt; command to create the tag category, tags and compute policies&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;New-MultiAZTags Command and Output&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As shown by the command&amp;rsquo;s output, the following were created:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A tag category with the name &lt;strong&gt;MultiAZ&lt;/strong&gt;. Only one tag from this category can be assigned to a single host or VM&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;Newly Created Tag Category&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two tags in the &lt;strong&gt;MultiAZ&lt;/strong&gt; tag category - &lt;strong&gt;MultiAZ-Preferred&lt;/strong&gt; and &lt;strong&gt;MultiAZ-Non-Preferred&lt;/strong&gt;. The description of each tag specifies the AZ for that site&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image9.png&#34; alt=&#34;Newly Created Tags&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two compute policies named &lt;strong&gt;MultiAZ-Preferred&lt;/strong&gt; and &lt;strong&gt;MultiAZ-Non-Preferred&lt;/strong&gt;. Each policy is a VM-Host affinity policy which requires the hosts and VMs to be tagged using the matching tags created previously. Note that there are zero hosts/VMs matching this policy as no host/VM has any of the tags assigned&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;Newly Created Compute Policies&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 6&lt;/strong&gt; – Run the &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; command to tag all the hosts in the SDDC&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;Set-MultiAzHostTag Command and Output&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As the command&amp;rsquo;s output shows, each host was assigned a tag that matches their fault domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Tagged vSphere Hosts&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In addition, the compute policies now show that each policy has a single host with a matching tag&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image13.png&#34; alt=&#34;Compute Policies With Matching Hosts&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step-7&lt;/strong&gt; – Assign tags to the appropriate VMs. This can be done manually via the GUI or by using the &lt;strong&gt;New-TagAssignment&lt;/strong&gt; PowerCLI command.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In my environment I tagged VM az1 with the MultiAZ-Preferred tag and VM az2 with the MultiAZ-Non-Preferred tag. Following that both compute policies now show one associated VM in addition to the host&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image14.png&#34; alt=&#34;Compute Policies With Matching Hosts and VMs&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A couple of seconds after I assigned the MultiAZ-Non-Preferred tag to the az2 VM DRS initiated a migration to the host in the non-preferred fault domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image15.png&#34; alt=&#34;Test Environment VM Placement Post Script&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As I mentioned before, there are several use cases I can think of for pinning a VM to a specific site. The most obvious one is a VM that is not replicated across AZs, so it makes sense to have the VM running in the same AZ. The second one is a resilient application, such as AD Domain Controllers, where making sure at least one node is always running. The great thing about compute policies is that they leverage a ‘should’ rule. That means that if an entire AZ fails, for example the non-preferred one, if the VM data is replicated the VMs set to the MultiAZ-non-preferred compute policy will still be powered on the preferred site by vSphere HA. Once the non-preferred AZ comes back up DRS will migrate the VMs to hosts the adhere to the compute policy.&lt;/p&gt;
+&lt;p&gt;I hope that you find this PowerShell module useful and that it can help address some design requirements in your SDDC. At the moment, in order to tag new hosts that are added to the SDDC using eDRS or as a planned procedure, you’ll need to run &lt;strong&gt;Set-MultiAzHostTag&lt;/strong&gt; again. Since it skips existing hosts you can also run it on a schedule. In the next couple of weeks, I’m planning on testing integration of the Set-MultiAzHostTag with &lt;ins&gt;
+&lt;a href=&#34;https://vmweventbroker.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;VEBA&lt;/a&gt;&lt;/ins&gt;, so it can be run when a new host is added to the SDDC.&lt;/p&gt;
+</description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>PowerShell</category>
+      
+        <category>vSAN</category>
+      
+        <category>Stretched Cluster</category>
+      
+    </item>
+    
+    <item>
+      <title>Configuring L2VPN High Availability in VMware Cloud on AWS</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</link>
+      <pubDate>Thu, 14 May 2020 22:17:16 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-05-14-configuring-l2vpn-high-availability-in-vmw-on-aws/</guid>
+      <description>&lt;p&gt;When we assist customers in designing a new VMware Cloud on AWS SDDC the question of Layer 2 extension comes up frequently. The reasons to extend on-prem networks are unique to each environment and can be a temporary state during migration or a long term strategy to ease scalability and bursting to the cloud.&lt;/p&gt;
+&lt;p&gt;VMW on AWS provides two options for extending an on-prem network to the SDDC - HCX Network Extension (NE) and Layer 2 VPN. While both solutions provide the same functionality they are different in several aspects. I won’t go into a detailed comparison in this post, but most users, especially if they are not very familiar with networking, will find that HCX NE is easier to configure and scale. L2 VPN, on the other hand, will provide faster recoverability from an appliance failure, and depending on how many networks are extended, it may use less compute resources on-prem and in the SDDC.&lt;/p&gt;
+&lt;p&gt;Since version 1.9 of VMW on AWS, the NSX-T 2.5 Autonomous Edge is used, which is simpler to configure and more performant than the previous L2 VPN client. In this post I will demonstrate how to configure the HA functionality for the autonomous edge.&lt;/p&gt;
+&lt;p&gt;When configuring a highly avaialable autonomous edge two appliances are deployed. The first edge that is deployed is the Primary edge and the second one is the Secondary edge. The Primary/Secondary value is permanent and simply indicates which edge was deployed first. It doesn&amp;rsquo;t represent which edge is active and handling the L2 VPN. This is shown by Active/Standby high availability status in the summary dashboard.&lt;/p&gt;
+&lt;h3 id=&#34;deploying-the-primary-autonomous-edge-and-configuring-l2-vpn&#34;&gt;Deploying the Primary Autonomous Edge and Configuring L2 VPN&lt;/h3&gt;
+&lt;p&gt;My colleague, &lt;a href=&#34;https://davidwzhang.com/&#34; style=&#34;text-decoration: underline&#34;&gt; David Zhang&lt;/a&gt;, wrote &lt;a href=&#34;https://davidwzhang.com/2020/02/24/setting-up-l2vpn-in-vmc-on-aws/&#34; style=&#34;text-decoration: underline&#34;&gt; a great post&lt;/a&gt; explaining all the necessary steps to deploy L2 VPN on VMW on AWS using the autonomous edge. I followed David&amp;rsquo;s guide to configure L2 VPN and used the following values to set up the primary autonomous edge:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Management IP - &lt;strong&gt;192.168.1.240&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;External Port
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth1,192.168.1.241,24&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;GW – &lt;strong&gt;192.168.1.254&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Internal - &lt;strong&gt;left blank&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;HA
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth3,172.25.53.1,24&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;GW – &lt;strong&gt;172.25.53.254&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Do not fill any other values in the HA section&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;Primay Autonomous Edge HA Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The L2 VPN tunnel and network extensions can be created before or after the secondary edge is deployed. There is no significance to the order in which these actions are performed.&lt;/p&gt;
+&lt;h3 id=&#34;deploying-the-secondary-autonomous-edge&#34;&gt;Deploying the Secondary Autonomous Edge&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - Deploy the autonomous edge OVF. Make sure the exact same edge size (medium or large) and networks as the primary controller are selected.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Under network properties, enter the hostname, default gateway, management IP and netmask. Make sure the same subnet as the management network of the primary edge is entered. I used &lt;strong&gt;192.168.1.242&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Secondary Autonomous Edge Management Network Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - The external IP of the secondary edge can be blank. After powering on the appliance it will negotiate with the primary edge and the same external IP as the primary edge will be configured in a disconnected state. As with the primary edge the internal port should be blank:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image3.png&#34; alt=&#34;Secondary Autonomous Edge External/Internal Network Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Configure the HA port&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Port – &lt;strong&gt;0,eth3,172.25.53.2,24&lt;/strong&gt; This port should be in the same subnet as the HA port of the primary edge&lt;/li&gt;
+&lt;li&gt;Default GW – &lt;strong&gt;172.25.53.254&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check the Secondary API Node checkbox&lt;/li&gt;
+&lt;li&gt;Primary node IP – &lt;strong&gt;192.168.1.240&lt;/strong&gt; This is the management IP of the primary edge deployed previously&lt;/li&gt;
+&lt;li&gt;Primary Node Credentials – If you changed the default username of the primay edge make sure you enter that username. Otherwise, it&amp;rsquo;s &lt;strong&gt;admin&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Primary node thumbprint – To get the API thumbprint log in to the primary edge with the &lt;strong&gt;admin&lt;/strong&gt; user and type the following command:&lt;br&gt;&lt;br&gt;
+&lt;code&gt; get certificate api thumbprint&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Primay Edge API Thumbprint&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;Secondary Autonomous Edge HA Configuration&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Make sure the edge VMs are running on different hosts and migrate one if necessary. If DRS is configured on the cluster create a rule to separate the edges.&lt;/p&gt;
+&lt;h3 id=&#34;validating-the-secondary-edge-deployment&#34;&gt;Validating The Secondary Edge Deployment&lt;/h3&gt;
+&lt;p&gt;A couple of minutes after the secondary edge powered on login to both appliances to validate the High Availability status. Under HA Peer Address, each edge should list the opposite edge’s management IP as a peer.&lt;br&gt;
+&lt;strong&gt;Note&lt;/strong&gt; – for some reason the management and peer addresses list a subnet mask of /19 on the web interface even though the correct mask of /24 is configured.&lt;/p&gt;
+&lt;p&gt;The primary edge should have a Primary API server role and an Active HA status. Once the L2 VPN is configured its status will be Up:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image6.png&#34; alt=&#34;Primary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The secondary edge should have a Secondary API server role and Standby under HA status. Once the L2 VPN is configured its status will be Doen:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In the &lt;em&gt;Port&lt;/em&gt; tab you can see that both edges have port named &lt;strong&gt;lrport_0&lt;/strong&gt; with the same IP and Port ID. The GUI doesn&amp;rsquo;t indicate what is the status of the port but this can be found using CLI. To do so login to both edges with the admin user and type the command &lt;code&gt;get logical-router interfaces&lt;/code&gt; and find the port named &lt;strong&gt;lrport_0&lt;/strong&gt;. You can also type &lt;code&gt;get logical-router interface &amp;lt;port id&amp;gt;&lt;/code&gt;. The &lt;strong&gt;admin&lt;/strong&gt; state of both ports should be &lt;strong&gt;up&lt;/strong&gt; but the &lt;strong&gt;op_state&lt;/strong&gt; of the standby edge should be &lt;strong&gt;down&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Command output of the Active edge:
+&lt;img src=&#34;image8.png&#34; alt=&#34;Active Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Command output of the Standby edge:
+&lt;img src=&#34;image9.png&#34; alt=&#34;Standby Autonomous Edge HA lrport Status&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;autonomous-edge-ha-failover-test&#34;&gt;Autonomous Edge HA Failover Test&lt;/h3&gt;
+&lt;p&gt;To test the autonomous edge failover, I initiated a continuous ping with timestamp to a VM connected to an extended L2 network in the VMW on AWS SDDC. After about 30 seconds to verify there are no drops, I powered off the active edge. The connection did drop but as can be seen in the screenshot below the standby edge claimed the external IP and re-established the L2 VPN tunnel in 10 seconds:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;HA Failover Test Ping Downtime&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After powering on the powered-off edge the HA status between the edges was re-established. The secondary edge remains the active edge and the primary will become active again only in case of an additional failure.&lt;/p&gt;
+&lt;p&gt;Secondary edge status:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;Primary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Primary edge status:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;Secondary Autonomous Edge HA Status&#34;&gt;&lt;/p&gt;
+</description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>L2VPN</category>
+      
+        <category>Networking</category>
+      
+    </item>
+    
+    <item>
+      <title>Tips for a Mobile or Temporary Home Office Setup</title>
+      <link>https://softwaredefinedcoffee.com/post/2020-03-23-equipment-for-temporary-working-from-home/</link>
+      <pubDate>Mon, 23 Mar 2020 19:00:11 -0500</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2020-03-23-equipment-for-temporary-working-from-home/</guid>
+      <description>&lt;p&gt;As more people are working from home due to COVID-19, I’ve seen plenty of remote-working resources and tips being shared across social media and other platforms. The Virtually Speaking Podcast did &lt;a href=&#34;https://www.vspeakingpodcast.com/episodes/147&#34; style=&#34;text-decoration: underline&#34;&gt; a great episode about it&lt;/a&gt; recently. Most of these resources discuss the changes both the employee and employer must make regarding communication, productivity, and culture change. If you are not accustomed to working remotely, then maintaining visual communication and avoiding distractions will take time to get used to and incorporate into your daily routine. While these skills are extremely important and can feel overwhelming when you are thrown into the situation on short notice, it is also essential to keep basic ergonomics in mind.&lt;/p&gt;
+&lt;p&gt;If you’re working from home temporarily, you’ll most likely be using your laptop, possibly while sitting on the sofa or bed. Using a laptop this way for an hour or two to answer some emails may be OK, but spending an entire workday like that can be an issue. I’m not an ergonomics expert, but I do know that the basics are keeping the monitor at eye level and the mouse and keyboard at a position that will allow your forearms to be as parallel to the floor as possible. The way laptops are designed forces you to bend your back and neck which, over time, will cause fatigue and discomfort.&lt;/p&gt;
+&lt;p&gt;I’ve been working remotely for about five years, so I’ve had a lot of time to fine-tune my home office setup. Some of it was provided by my employer (external monitor, docking station) and some were purchased by me throughout the years (chair, desk, ergonomic keyboard and mouse). If your employer can provide you with some equipment or if you already have a home office setup - great. If you don’t, hopefully I can share some tips that will help you improve your temporary home office experience.&lt;/p&gt;
+&lt;p&gt;Even though I’m working remotely, travel has always been a big part of my current and previous roles. Whether it was visiting a customer, attending a training, or meetings at the company HQ, I’d find myself working solely with a laptop for longer than I’d prefer. Starting with purchasing an external mouse, I eventually acquired enough items to travel with a complete mobile office. This setup is lightweight, doesn’t take up a lot of space, and doesn’t break the bank. If you travel for work, you’ll also be able to repurpose it for that in the future. Here’s my travel setup sitting on my dining room table (which to be completely honest, functions as my desk when we have too many guests staying over):
+&lt;img src=&#34;IMG_0636.jpg&#34; alt=&#34;Mobile office setup&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;1-coffee&#34;&gt;1. Coffee&lt;/h3&gt;
+&lt;p&gt;I mean, can you really work without it?!&lt;/p&gt;
+&lt;h3 id=&#34;2-laptop-stand&#34;&gt;2. Laptop Stand&lt;/h3&gt;
+&lt;p&gt;This is a must for positioning your laptop’s monitor at eye level. An adjustable stand is preferable to ensure you can adjust it according to your work surface and your height. I have two laptop stands - a stationary one at my desk and one for travel.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;IMG_0645.jpg&#34; alt=&#34;Laptop stands&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The two stands in the photo are the Roost (on the left) and iLevel2 by RainDesign (on the right):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.therooststand.com/&#34; style=&#34;text-decoration: underline&#34;&gt;Roost Laptop Stand&lt;/a&gt; - I love this stand. It started as a Kickstarter project and an updated version came out several years ago. That team did a great job on the product - it’s lightweight while still being very sturdy. It also has three height options. I’m 5’7” / 170 cm and I use the middle setting, so it is suitable for taller or shorter people as well. There are some cheaper imitations out there (Nextand is the most obvious one) which should also get the job done.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.amazon.com/Rain-Design-12031-Adjustable-Notebook/dp/B00LSU4QD8&#34; style=&#34;text-decoration: underline&#34;&gt;Rain Design iLevel2&lt;/a&gt; - I use this stand at my desk and it’s pretty nice. It’s obviously not as mobile, but it looks good and is cheaper than the Roost. My only complaint is that even at the maximum setting, the laptop doesn’t reach eye level. For me, this is not the end of the world since I use it to complement my external monitor. However, if it’s your main screen and you are my height or taller, I’d consider a different option.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And then there’s the third option, which I used at hotel rooms while traveling prior to purchasing the Roost stand - a stack of books/drawers/pillows. It’s not the most elegant or sophisticated, but it costs $0, you don’t have to wait for shipping, and finally - it’s your home office, so no co-worker can judge you on your low-tech frugal setup.&lt;/p&gt;
+&lt;h3 id=&#34;3-external-mouse-and-keyboard&#34;&gt;3. External Mouse and Keyboard&lt;/h3&gt;
+&lt;p&gt;Using a laptop stand pretty much forces you to use an external mouse and keyboard, otherwise your forearms and wrists will end up at a really weird angle that will cause more harm than using the laptop on a desk. Of course, an ergonomic set is better, but most of us probably have a mouse and keyboard lying around somewhere. If not, a simple wired or even wireless mouse and keyboard combo can be purchased for $20 or less.&lt;/p&gt;
+&lt;p&gt;The mouse I use for travel is a very simple HP mouse that I bought eight years ago while living in France. I picked it up at a local tech store for about 5€. There’s nothing fancy about it other than the fact that it’s the perfect size to just stick in a bag and not take up a lot of space.&lt;/p&gt;
+&lt;p&gt;The keyboard I have is a &lt;a href=&#34;https://www.amazon.com/iClever-Rechargeable-Bluetooth-Smartphones-IC-BK06/dp/B01JA6HG88/&#34; style=&#34;text-decoration: underline&#34;&gt;Bluetooth keyboard by iClever&lt;/a&gt;. It is an ergonomic portable keyboard, which is a really hard thing to find. It can connect to up to three devices and works with Windows, Mac, iOS and Android. Plus, when folded it takes only a little more space than my iPhone X:
+&lt;img src=&#34;IMG_0621.jpg&#34; alt=&#34;iClever keyboard folded&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;4-headsets-optional&#34;&gt;4. Headsets (Optional)&lt;/h3&gt;
+&lt;p&gt;These are not a must but will make your working from home experience a lot easier.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Headset with noise cancelling microphone&lt;/strong&gt; - Even though you’re at home, noise can still be an issue. My previous apartment was on a main street not far from a hospital. At least five times a day, police cars, ambulances and fire trucks would pass next to my building with sirens blazing. I got used to it very quickly, but it did tend to startle people on conference calls and make them think I was living in a war zone. After using the basic iPhone headset for several years, I purchased the &lt;a href=&#34;https://www.amazon.com/Plantronics-VOYAGER-5200-UC-206110-01-Advanced-Bluetooth/dp/B01G49I2FA&#34; style=&#34;text-decoration: underline&#34;&gt;Plantronics 5200&lt;/a&gt; following a recommendation from one of my customers. It’s designed to be a travel headset, but I use it all the time as my main headset. It integrates with Zoom, Teams and Skype, plus the noise cancellation technology on the microphone is excellent. I have had calls while walking down a windy and busy Chicago street and those on the call had no problems hearing me.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Noise cancelling headphones&lt;/strong&gt; - As mentioned, the noise at home can be a real distraction, especially if you do not live alone. I use over-the-ear Bluetooth headphones that I picked up from Amazon for $40 two years ago. They don’t have active noise cancellation, but they tune out enough noise for me to focus and still hear if someone calls to me from the other room.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;IMG_0626.jpg&#34; alt=&#34;Headset and headphones&#34;&gt;&lt;/p&gt;
+&lt;p&gt;In conclusion, for very little effort and potentially little (to no) cost, you can greatly improve your working from home experience. If you have any ideas for ways to improve your temporary home/mobile office, would like to share your setup, or have any feedback, please comment or send me an email.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; this post was not sponsored by any of the mentioned products. I am simply sharing my own opinions and experiences.&lt;/p&gt;
+</description>
+      
+        <category>Work From Home</category>
+      
+        <category>Business Travel</category>
+      
+    </item>
+    
+  </channel>
+</rss>

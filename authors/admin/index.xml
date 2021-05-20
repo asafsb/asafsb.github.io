@@ -5,7 +5,7 @@
     <link>https://softwaredefinedcoffee.com/authors/admin/</link>
       <atom:link href="https://softwaredefinedcoffee.com/authors/admin/index.xml" rel="self" type="application/rss+xml" />
     <description>Software-Defined Coffee</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Thu, 16 Jul 2020 20:44:10 -0500</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Wed, 19 May 2021 01:00:11 +0000</lastBuildDate>
     <image>
       <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
       <title>Software-Defined Coffee</title>
@@ -13,9 +13,319 @@
     </image>
     
     <item>
+      <title>Configuring Route Based VPN Between VMware Cloud on AWS and pfSense</title>
+      <link>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</link>
+      <pubDate>Wed, 19 May 2021 01:00:11 +0000</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</guid>
+      <description>&lt;p&gt;For certain tests and demos, I occasionally need to connect my home lab to our VMW on AWS SDDC. Since I can&amp;rsquo;t justify the cost of a Direct Connect port to my home lab my options are either route or policy-based VPN. Unless there&amp;rsquo;s a specific use-case for policy-based, route-based VPN (RBVPN) is definitely &lt;u&gt;
+&lt;a href=&#34;https://vmc.techzone.vmware.com/vmc-arch/docs/network/vmc-aws-ipsec-vpn#&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;my preferred method&lt;/a&gt;&lt;/u&gt;.&lt;/p&gt;
+&lt;p&gt;Currently, I&amp;rsquo;m using a pfSense router/firewall for my home lab, which meant the first step was to select which BGP package I should install. At first, I was going to configure BGP using OpenBGPD as it seemed more common, but I decided to use FRR instead. The main reason was that at the time I was also studying for the NSX-V VCAP Deploy exam and wanted to be able to leverage both OSPF and BGP. Another reason was that it seems as though FRR is being recommended over OpenBGPD and Quagga OSPF as pfSense&amp;rsquo;s dynamic routing package of choice.&lt;/p&gt;
+&lt;h3 id=&#34;planning-and-pre-requisites&#34;&gt;Planning and Pre-requisites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;There are certain values in a RBVPN that have to be identical in both sites and some that must be different for connectivity to work:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Setting/Value&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;th&gt;Values I used&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Local public IP&lt;/td&gt;
+&lt;td&gt;The public IP associated with the pfSense. If it&amp;rsquo;s behind a NAT, note the private IP as well&lt;/td&gt;
+&lt;td&gt;&lt;u&gt;
+&lt;a href=&#34;https://www.whatsmyip.org/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;My public IP&lt;/a&gt;&lt;/u&gt; and 192.168.1.254&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Remote public IP&lt;/td&gt;
+&lt;td&gt;The VPN Public IP of the SDDC&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Local BGP ASN&lt;/td&gt;
+&lt;td&gt;The ASN that will be assigned to pfSense&lt;/td&gt;
+&lt;td&gt;65025&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SDDC BGP ASN&lt;/td&gt;
+&lt;td&gt;The ASN that will be assigned to the SDDC&amp;rsquo;s BGP instance. Must be different than the local BGP ASN&lt;/td&gt;
+&lt;td&gt;65001&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IPsec IKE version (for phase 1 and 2)&lt;/td&gt;
+&lt;td&gt;Select a setting that is &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. The setting must be identical in both sites for an IPsec session to establish&lt;/td&gt;
+&lt;td&gt;IKEv2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;IPsec encryption parameters (for phase 1 and 2)&lt;/td&gt;
+&lt;td&gt;Select values that are &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. Values must be identical in both sites for an IPsec session to establish&lt;/td&gt;
+&lt;td&gt;AES GCM 256, 128-bit key, SHA256, DH14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Pre-shared key for IPsec&lt;/td&gt;
+&lt;td&gt;Will be used to authenticate the IPsec session between pfSense and the SDDC&lt;/td&gt;
+&lt;td&gt;Generated using pfSense&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Local BGP IP&lt;/td&gt;
+&lt;td&gt;An IP in a network that will only be used to establish a BGP neighbor relationship between pfSense and the SDDC. Doesn&amp;rsquo;t need to be large or routable, preferably in the 169.254.0.0 range&lt;/td&gt;
+&lt;td&gt;169.254.225.25/30&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SDDC BGP IP&lt;/td&gt;
+&lt;td&gt;An IP in the same subnet as the local BGP IP&lt;/td&gt;
+&lt;td&gt;169.254.225.26/30&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Configure port forwarding (Optional)&lt;/strong&gt; - If your pfSense is not directly connected to the internet you&amp;rsquo;ll need to enable port forwarding in your public-facing router/firewall and forward UDP port 4500 to your pfSense&amp;rsquo;s private IP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;uin-vmw-on-awsu&#34;&gt;&lt;u&gt;In VMW on AWS:&lt;/u&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Note the VPN public IP&lt;/strong&gt; - In the SDDC you&amp;rsquo;d like to connect to, navigate to the &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; section. The &lt;strong&gt;Overview&lt;/strong&gt; tab should have the &lt;strong&gt;VPN Public IP&lt;/strong&gt; listed:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image1.png&#34; alt=&#34;VPN Public IP&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Note/change the VMW on AWS ASN&lt;/strong&gt; - The default ASN is 65000. To validate or edit the ASN, within the &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; section, navigate to &lt;strong&gt;VPN&lt;/strong&gt; &amp;gt; &lt;strong&gt;Route Based&lt;/strong&gt;. Click &lt;strong&gt;Edit Local ASN&lt;/strong&gt;. You can now change the number to an ASN that is unique in your BGP environment. In this configuration I will use &lt;strong&gt;65001&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image2.png&#34; alt=&#34;Edit VMW on AWS ASN&#34;&gt;
+&lt;img src=&#34;image3.png&#34; alt=&#34;VMW on AWS ASN&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;uin-pfsenseu&#34;&gt;&lt;u&gt;In pfSense:&lt;/u&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Allow APIPA traffic (optional)&lt;/strong&gt; - By default VMW on AWS allows RBVPN BGP sessions to be formed using the 169.254.0.0/16 range. pfSense drops that range by default. To configure pfSense to allow that range navigate to &lt;strong&gt;System&lt;/strong&gt; &amp;gt; &lt;strong&gt;Advanced&lt;/strong&gt;. Go to the &lt;strong&gt;Firewall &amp;amp; NAT&lt;/strong&gt; tab and check &lt;strong&gt;Allow APIPA traffic&lt;/strong&gt;. If APIPA traffic is not allowed the range that will be used for the BGP session should be permitted in the Compute Gateway firewall in VMW on AWS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image4.png&#34; alt=&#34;Allow APIPA traffic&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Install FRR&lt;/strong&gt; - FRR will add dynamic routing capabilities to pfSense using BGP and OSPF. To install FRR navigate to &lt;strong&gt;System&lt;/strong&gt; &amp;gt; &lt;strong&gt;Package Manager&lt;/strong&gt; and select the &lt;strong&gt;Available Packages&lt;/strong&gt; tab. Search for &lt;strong&gt;FRR&lt;/strong&gt; and click &lt;strong&gt;Install&lt;/strong&gt;. Once the installation is finished successfully  FRR will appear under &lt;strong&gt;Installed Packages&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image5.png&#34; alt=&#34;FRR Installation&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;pfsense-configuration&#34;&gt;pfSense configuration&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt; - Conigure IPsec Tunnel&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;VPN&lt;/strong&gt; &amp;gt; &lt;strong&gt;IPsec&lt;/strong&gt; and click &lt;strong&gt;Add P1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Configure the following phase 1 settings (these settings will have to match when configured in VMW on AWS):
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Key Exchange version&lt;/strong&gt; - IKEv1 or IKEv2. I selected IKEv2&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Interface&lt;/strong&gt; - the WAN interface of your pfSense&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Gateway&lt;/strong&gt; - the &lt;strong&gt;VPN Public IP&lt;/strong&gt; of the SDDC&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pre-Shared Key&lt;/strong&gt; - enter a shared key or generate one&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Encryption Algorithm&lt;/strong&gt; - select encryption the desired values that are &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. I selected the following:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Algorithm&lt;/strong&gt; - AES256-GCM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key length&lt;/strong&gt; - 128&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hash&lt;/strong&gt; - SHA256&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DH Group&lt;/strong&gt; - 14 (2048 bit)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;On the newly created IPsec tunnel, Click &lt;strong&gt;Show Phase 2 Entries&lt;/strong&gt; and then &lt;strong&gt;Add P2&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Configure the following phase 2 settings:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mode&lt;/strong&gt; - Routed (VTI)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Local Network&lt;/strong&gt; - &lt;strong&gt;Address&lt;/strong&gt; (not &lt;em&gt;Network&lt;/em&gt;!). Under &lt;strong&gt;Address&lt;/strong&gt; enter the local BGP IP designated for pfSense. I used &lt;strong&gt;169.254.225.25&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Network&lt;/strong&gt; - &lt;strong&gt;Address&lt;/strong&gt; (not &lt;em&gt;Network&lt;/em&gt;!). Under &lt;strong&gt;Address&lt;/strong&gt; enter the remote BGP IP designated for VMWonAWS. I used &lt;strong&gt;169.254.225.26&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Similar to the encryption configuration in Phase 1, select encryption values that are &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5566A021-ECF7-41C4-B899-30924EBCD81F.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;supported by VMW on AWS&lt;/a&gt;&lt;/u&gt;. I selected similar values to the ones I set in Phase 1:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Algorithm&lt;/strong&gt; - AES256-GCM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key length&lt;/strong&gt; - 128&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hash&lt;/strong&gt; - SHA256&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PFS Key Group&lt;/strong&gt; - 14 (2048 bit)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Validate both Phase 1 and Phase 2 configurations and click &lt;strong&gt;Apply Changes&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image6_hu2c75ae82bc5d70677c26f83e2685b1d8_58443_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image6_hu2c75ae82bc5d70677c26f83e2685b1d8_58443_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;IPsec Configuration&#34; width=&#34;1148&#34; height=&#34;347&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Assign the IPsec interface. This step enables the IPsec tunnel created in the previous step as a virtual interface for pfSense, so it can be leveraged by FRR to establish a BGP connection.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Interfaces&lt;/strong&gt; &amp;gt; &lt;strong&gt;Assignments&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;At the bottom, under &lt;strong&gt;Available network ports&lt;/strong&gt;, select the newly created IPsec tunnel and click &lt;strong&gt;Add&lt;/strong&gt;
+&lt;img src=&#34;image7.png&#34; alt=&#34;IPsec interface&#34;&gt;&lt;/li&gt;
+&lt;li&gt;The new interface is added as &lt;strong&gt;OPT#&lt;/strong&gt;. In my case it was added as OPT4. Click the interface name&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;Enable Interface&lt;/strong&gt; and provide a &lt;strong&gt;Description&lt;/strong&gt; to make it easier to identify the interface&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image8.png&#34; alt=&#34;IPsec Interface enablement&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt; - Allow traffic via the IPsec interface. By default pfSense will block any traffic on newly added interfaces. For the BGP connection to establish and for traffic to flow several allow rules should be opened.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Firewall&lt;/strong&gt; &amp;gt; &lt;strong&gt;Rules&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Select the &lt;strong&gt;IPsec&lt;/strong&gt; interfaces&lt;/li&gt;
+&lt;li&gt;Create inbound and outbound rules that will match the traffic you want to allow communicating over the RBVPN. Don&amp;rsquo;t forget to also enable the BGP communication between pfSense and the SDDC. For this scenario I&amp;rsquo;m going to allow all traffic&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image9.png&#34; alt=&#34;IPsec Firewall Rules&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt; - Configure FRR. Now that IPsec is configured on the pfSense side, we are ready to configure FRR and BGP.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Services&lt;/strong&gt; &amp;gt; &lt;strong&gt;FRR Global/Zebra&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;Enable FRR&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set the &lt;strong&gt;Default Router ID&lt;/strong&gt;. You can specify it individually per routing protocol. I set it to the pfSense&amp;rsquo;s BGP IP, &lt;strong&gt;169.254.225.25&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set a &lt;strong&gt;Master Password&lt;/strong&gt;. This password is only used by FRRs internal daemons, so set it to whatever you want&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image10.png&#34; alt=&#34;FRR Global Settings&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 5&lt;/strong&gt; - Configure FRR&amp;rsquo;s BGP. Note that I&amp;rsquo;m not going into the (many) configuration options possible in BGP. This is just going to be a minimal setup to enable communication and route exchanges.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Services&lt;/strong&gt; &amp;gt; &lt;strong&gt;FRR BGP&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Check &lt;strong&gt;Enable BGP Routing&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set the &lt;strong&gt;Local AS&lt;/strong&gt; to a value that is different than the AS in VMW on AWS. In my lab it is set to &lt;strong&gt;65025&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Specify the &lt;strong&gt;Router ID&lt;/strong&gt; if you&amp;rsquo;d like it to be different than the one specified in &lt;strong&gt;step 4&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;FRR BGP Settings&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Under &lt;strong&gt;Network Distribution&lt;/strong&gt;, you can control what routes are advertised via BGP. Since I didn&amp;rsquo;t want all of my lab and home subnets to be advertised, I decided to specify the ones I wanted to use for testing purposes&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image12.png&#34; alt=&#34;BGP Network Distribution&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 6&lt;/strong&gt; - Configure the SDDC&amp;rsquo;s Edge as a BGP neighbor. Similar to the previous step, there&amp;rsquo;s a lot of BGP options here, but I&amp;rsquo;m just going to cover the basic to establish connectivity.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the &lt;strong&gt;FRR BGP&lt;/strong&gt; view, select the &lt;strong&gt;Neighbors&lt;/strong&gt; tab and click &lt;strong&gt;Add&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Under &lt;strong&gt;Name/Address&lt;/strong&gt; set the remote BGP IP of the SDDC. In my case it&amp;rsquo;s &lt;strong&gt;169.254.225.26&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Set a &lt;strong&gt;Description&lt;/strong&gt; to easily identify this neighbor&lt;/li&gt;
+&lt;li&gt;Set the &lt;strong&gt;Remote AS&lt;/strong&gt; to the ASN configured in VMW on AWS&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image13.png&#34; alt=&#34;BGP neighbor Settings&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;vmw-on-aws-configuration&#34;&gt;VMW on AWS configuration&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Step 7&lt;/strong&gt; - Configure RBVPN in VMW on AWS&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; &amp;gt; &lt;strong&gt;VPN&lt;/strong&gt;. By default you should be in the &lt;strong&gt;Route Based&lt;/strong&gt; tab&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Add VPN&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Configure the following in the top section:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Name&lt;/strong&gt; - Descriptive name to identify the VPN&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Local IP Address&lt;/strong&gt; - Select the &lt;strong&gt;Public IP&lt;/strong&gt; from the drop down list. &lt;strong&gt;Note&lt;/strong&gt;: this cannot be changed later&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Public IP Address&lt;/strong&gt; - The public IP where the pfSense is reachable&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Local IP/Prefix Length&lt;/strong&gt; - Enter the SDDC&amp;rsquo;s BGP IP and prefex length. I used &lt;strong&gt;169.254.225.26/30&lt;/strong&gt;. &lt;strong&gt;Note&lt;/strong&gt;: this cannot be changed later&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Remote IP&lt;/strong&gt; - Enter the pfSense BGP IP. I used &lt;strong&gt;169.254.225.25&lt;/strong&gt;. &lt;strong&gt;Note&lt;/strong&gt;: this cannot be changed later&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Neighbor ASN&lt;/strong&gt; - Enter the ASN configured in pfSense. I used &lt;strong&gt;65025&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Preshared Key&lt;/strong&gt; - Enter the same pre-shared key entered in &lt;strong&gt;step 1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remote Private IP&lt;/strong&gt; - If the pfSense is behind a NAT, enter the private IP of the pfSense. I used &lt;strong&gt;192.168.1.254&lt;/strong&gt;, which is the WAN interface&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Configure the following in the bottom section (all values should correlate to the IPsec config in &lt;strong&gt;step 1&lt;/strong&gt;):
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;IKE Encryption&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 algorithm. I configured &lt;strong&gt;AES GCM 256&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IKE Digest Algorithm&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 hash. I configured &lt;strong&gt;None&lt;/strong&gt;, as this is required in VMWonAWS &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5AF45CE6-FA53-45C0-83E5-25F8E3A055E9.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;when using GCM&lt;/a&gt;&lt;/u&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IKE Type&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 key exchange version. I configured &lt;strong&gt;IKE V2&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Diffie Hellman&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 1 DH Group. I configured &lt;strong&gt;14&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tunnel Encryption&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 2 algorithm. I configured &lt;strong&gt;AES GCM 256&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tunnel Digest Algorithm&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 2 hash. I configured &lt;strong&gt;None&lt;/strong&gt;, as this is required in VMWonAWS &lt;u&gt;
+&lt;a href=&#34;https://docs.vmware.com/en/VMware-Cloud-on-AWS/services/com.vmware.vmc-aws.networking-security/GUID-5AF45CE6-FA53-45C0-83E5-25F8E3A055E9.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;when using GCM&lt;/a&gt;&lt;/u&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Perfect Forward Secrecy&lt;/strong&gt; - Correlates to pfSense&amp;rsquo;s Phase 2 PFS. I set it to &lt;strong&gt;Enabled&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image14_hu9ef110cd4d0a67a897102658570c3244_76439_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/image14_hu9ef110cd4d0a67a897102658570c3244_76439_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;VMW on AWS RBVPN settings&#34; width=&#34;1222&#34; height=&#34;460&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 8 (Optional)&lt;/strong&gt; - Allow the BGP IPs in the Gateway Firewall if a they are not in the 169.254.0.0/16 range&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Navigate to &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; &amp;gt; &lt;strong&gt;Gateway Firewall&lt;/strong&gt;. By default you should be in the &lt;strong&gt;Compute Gateway&lt;/strong&gt; tab&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;+ Add Rule&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Make sure the &lt;strong&gt;Sources&lt;/strong&gt; and &lt;strong&gt;Destination&lt;/strong&gt; are the subnet/IPs that are used by both BGP interfaces. Under &lt;strong&gt;Applied To&lt;/strong&gt; apply the rule only to the &lt;strong&gt;VPN Tunnel Interface&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Click &lt;strong&gt;Publish&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;validate-connectivity&#34;&gt;Validate Connectivity&lt;/h3&gt;
+&lt;p&gt;At this point the IPsec tunnels should be up and the BGP session should establish and extend routes. We can validate connectivity in VMWonAWS and in pfSense.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;In VMW on AWS&lt;/strong&gt; - navigate to &lt;strong&gt;Networking &amp;amp; Security&lt;/strong&gt; &amp;gt; &lt;strong&gt;VPN&lt;/strong&gt;. In the &lt;strong&gt;Route Based&lt;/strong&gt; tab verify that both the &lt;strong&gt;Status&lt;/strong&gt; and &lt;strong&gt;BGP Remote IP&lt;/strong&gt; are showing a green circle. You can also expand the view and view the learned and advertised routes.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image15.png&#34; alt=&#34;VMW on AWS RBVPN settings - Established Tunnel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;In pfSense&lt;/strong&gt; - navigate to &lt;strong&gt;Status&lt;/strong&gt; &amp;gt; &lt;strong&gt;FRR&lt;/strong&gt;. In the &lt;strong&gt;BGP&lt;/strong&gt; tab there are several places where you can validate the established connection. The main ones are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Under the &lt;strong&gt;BGP Routes&lt;/strong&gt; you can view the learned routes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BGP Neighbors&lt;/strong&gt; will present a lot of information about the neighbor connection. The important thing is to make sure the &lt;strong&gt;BGP State&lt;/strong&gt; is &lt;strong&gt;Established&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image16.png&#34; alt=&#34;FRR BGP Neighbor Status&#34;&gt;&lt;/p&gt;
+</description>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
+      
+        <category>pfSense</category>
+      
+        <category>VPN</category>
+      
+        <category>RBVPN</category>
+      
+        <category>Route Based VPN</category>
+      
+    </item>
+    
+    <item>
       <title>Posts</title>
       <link>https://softwaredefinedcoffee.com/post/</link>
-      <pubDate>Thu, 16 Jul 2020 20:44:10 -0500</pubDate>
+      <pubDate>Wed, 19 May 2021 01:00:11 +0000</pubDate>
       <guid>https://softwaredefinedcoffee.com/post/</guid>
       <description></description>
       
