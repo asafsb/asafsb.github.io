@@ -29,6 +29,12 @@
     <loc>https://softwaredefinedcoffee.com/categories/hcx/</loc>
     <lastmod>2021-06-04T01:00:11+00:00</lastmod>
   </url><url>
+    <loc>https://softwaredefinedcoffee.com/tags/networking/</loc>
+    <lastmod>2021-06-04T01:00:11+00:00</lastmod>
+  </url><url>
+    <loc>https://softwaredefinedcoffee.com/categories/networking/</loc>
+    <lastmod>2021-06-04T01:00:11+00:00</lastmod>
+  </url><url>
     <loc>https://softwaredefinedcoffee.com/post/</loc>
     <lastmod>2021-06-04T01:00:11+00:00</lastmod>
   </url><url>
@@ -41,10 +47,16 @@
     <loc>https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/</loc>
     <lastmod>2021-06-04T01:00:11+00:00</lastmod>
   </url><url>
-    <loc>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</loc>
-    <lastmod>2021-05-19T01:00:11+00:00</lastmod>
+    <loc>https://softwaredefinedcoffee.com/tags/vmc-on-aws/</loc>
+    <lastmod>2021-06-04T01:00:11+00:00</lastmod>
   </url><url>
-    <loc>https://softwaredefinedcoffee.com/categories/networking/</loc>
+    <loc>https://softwaredefinedcoffee.com/tags/vmware-cloud-on-aws/</loc>
+    <lastmod>2021-06-04T01:00:11+00:00</lastmod>
+  </url><url>
+    <loc>https://softwaredefinedcoffee.com/tags/vmwonaws/</loc>
+    <lastmod>2021-06-04T01:00:11+00:00</lastmod>
+  </url><url>
+    <loc>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</loc>
     <lastmod>2021-05-19T01:00:11+00:00</lastmod>
   </url><url>
     <loc>https://softwaredefinedcoffee.com/tags/pfsense/</loc>
@@ -56,16 +68,7 @@
     <loc>https://softwaredefinedcoffee.com/tags/route-based-vpn/</loc>
     <lastmod>2021-05-19T01:00:11+00:00</lastmod>
   </url><url>
-    <loc>https://softwaredefinedcoffee.com/tags/vmc-on-aws/</loc>
-    <lastmod>2021-05-19T01:00:11+00:00</lastmod>
-  </url><url>
-    <loc>https://softwaredefinedcoffee.com/tags/vmware-cloud-on-aws/</loc>
-    <lastmod>2021-05-19T01:00:11+00:00</lastmod>
-  </url><url>
     <loc>https://softwaredefinedcoffee.com/categories/vmware-cloud-on-aws/</loc>
-    <lastmod>2021-05-19T01:00:11+00:00</lastmod>
-  </url><url>
-    <loc>https://softwaredefinedcoffee.com/tags/vmwonaws/</loc>
     <lastmod>2021-05-19T01:00:11+00:00</lastmod>
   </url><url>
     <loc>https://softwaredefinedcoffee.com/tags/vpn/</loc>
@@ -129,9 +132,6 @@
     <lastmod>2020-05-14T22:17:16-05:00</lastmod>
   </url><url>
     <loc>https://softwaredefinedcoffee.com/tags/l2vpn/</loc>
-    <lastmod>2020-05-14T22:17:16-05:00</lastmod>
-  </url><url>
-    <loc>https://softwaredefinedcoffee.com/tags/networking/</loc>
     <lastmod>2020-05-14T22:17:16-05:00</lastmod>
   </url><url>
     <loc>https://softwaredefinedcoffee.com/tags/business-travel/</loc>

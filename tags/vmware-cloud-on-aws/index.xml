@@ -5,7 +5,7 @@
     <link>https://softwaredefinedcoffee.com/tags/vmware-cloud-on-aws/</link>
       <atom:link href="https://softwaredefinedcoffee.com/tags/vmware-cloud-on-aws/index.xml" rel="self" type="application/rss+xml" />
     <description>VMware Cloud on AWS</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Wed, 19 May 2021 01:00:11 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2021 Software-Defined Coffee</copyright><lastBuildDate>Fri, 04 Jun 2021 01:00:11 +0000</lastBuildDate>
     <image>
       <url>https://softwaredefinedcoffee.com/img/SDCoffeeLogo.png</url>
       <title>VMware Cloud on AWS</title>
@@ -545,6 +545,14 @@
 </description>
       
         <category>HCX</category>
+      
+        <category>Networking</category>
+      
+        <category>VMC on AWS</category>
+      
+        <category>VMWonAWS</category>
+      
+        <category>VMware Cloud on AWS</category>
       
     </item>
     
