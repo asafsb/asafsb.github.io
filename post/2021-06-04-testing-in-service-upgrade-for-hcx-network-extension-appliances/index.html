@@ -29,7 +29,7 @@
     
   
   <meta name="description" content="HCX 4.0 introduced plenty of new  features and functionalities, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.
-To compare the downtime the extended networks experience using each upgrade methods, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances.">
+To compare the downtime the extended networks experience using each upgrade method, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/">
@@ -269,7 +269,7 @@ To compare the downtime the extended networks experience using each upgrade meth
   <meta property="og:url" content="https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/">
   <meta property="og:title" content="Testing In-Service Upgrade for HCX Network Extension Appliances | Software-Defined Coffee">
   <meta property="og:description" content="HCX 4.0 introduced plenty of new  features and functionalities, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.
-To compare the downtime the extended networks experience using each upgrade methods, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances."><meta property="og:image" content="https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/featured.png">
+To compare the downtime the extended networks experience using each upgrade method, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances."><meta property="og:image" content="https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/featured.png">
   <meta property="twitter:image" content="https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/featured.png"><meta property="og:locale" content="en-us">
   
     
@@ -323,7 +323,7 @@ To compare the downtime the extended networks experience using each upgrade meth
       "url": "https://softwaredefinedcoffee.com/images/logo_hu6a9919c281d1691f5c19a9c9499d0583_79377_192x192_fit_lanczos_2.png"
     }
   },
-  "description": "HCX 4.0 introduced plenty of new  features and functionalities, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.\nTo compare the downtime the extended networks experience using each upgrade methods, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances."
+  "description": "HCX 4.0 introduced plenty of new  features and functionalities, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.\nTo compare the downtime the extended networks experience using each upgrade method, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances."
 }
 </script>
 
@@ -697,7 +697,7 @@ To compare the downtime the extended networks experience using each upgrade meth
     <div class="article-style">
       <p>HCX 4.0 introduced plenty of new <u>
 <a href="https://blogs.vmware.com/networkvirtualization/2021/02/introducing-hcx4-0.html/" target="_blank" rel="noopener">features and functionalities</a></u>, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.</p>
-<p>To compare the downtime the extended networks experience using each upgrade methods, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances. You can read about the steps I performed or jump straight to the test conclusion:</p>
+<p>To compare the downtime the extended networks experience using each upgrade method, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances. You can read about the steps I performed or jump straight to the test conclusion:</p>
 <ul>
 <li><strong><u>
 <a href="#test-environment-overview">Test Environment Overview</a></u></strong></li>
@@ -920,12 +920,12 @@ To compare the downtime the extended networks experience using each upgrade meth
 
 <p>To simulate the process that occurs during an appliance upgrade I opted to redeploy the appliances, as this gives me the option of running the test several times without needing to wait for a new version to upgrade to. To redeploy the appliances, follow these steps:</p>
 <ol>
-<li>Open to the HCX plugin or connect to the HCX manager</li>
+<li>Open the HCX plugin in vCenter or connect to the HCX manager</li>
 <li>Select <strong>Interconnect</strong> and then the <strong>Service Mesh</strong> tab</li>
 <li>Under the service mesh you&rsquo;d like to test, click <strong>View Appliances</strong></li>
 <li>Select the NE appliance and click <strong>Redeploy</strong></li>
-<li>You&rsquo;d then have the option of selecting <strong>Standard</strong> or <strong>In-Service</strong> mode'</li>
-<li>Once the redeployment is initiated, the tasks can be viewed from the <strong>Tasks</strong> tab</li>
+<li>You&rsquo;d then have the option of selecting <strong>Standard</strong> or <strong>In-Service</strong> mode</li>
+<li>Once the redeployment is initiated, the specific steps and actions taken can be viewed in the <strong>Tasks</strong> tab</li>
 </ol>
 
 
@@ -1099,7 +1099,7 @@ To compare the downtime the extended networks experience using each upgrade meth
 
 </figure>
 
-<p>As a comparison, here are the IPs of the original and newly deployed NE appliances:</p>
+<p>As a comparison, here are the IPs of the original and newly deployed NE appliance on-prem:</p>
 <table>
 <thead>
 <tr>

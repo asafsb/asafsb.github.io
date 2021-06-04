@@ -28,7 +28,7 @@
       <guid>https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/</guid>
       <description>&lt;p&gt;HCX 4.0 introduced plenty of new &lt;u&gt;
 &lt;a href=&#34;https://blogs.vmware.com/networkvirtualization/2021/02/introducing-hcx4-0.html/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;features and functionalities&lt;/a&gt;&lt;/u&gt;, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.&lt;/p&gt;
-&lt;p&gt;To compare the downtime the extended networks experience using each upgrade methods, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances. You can read about the steps I performed or jump straight to the test conclusion:&lt;/p&gt;
+&lt;p&gt;To compare the downtime the extended networks experience using each upgrade method, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances. You can read about the steps I performed or jump straight to the test conclusion:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;&lt;u&gt;
 &lt;a href=&#34;#test-environment-overview&#34;&gt;Test Environment Overview&lt;/a&gt;&lt;/u&gt;&lt;/strong&gt;&lt;/li&gt;
@@ -251,12 +251,12 @@
 
 &lt;p&gt;To simulate the process that occurs during an appliance upgrade I opted to redeploy the appliances, as this gives me the option of running the test several times without needing to wait for a new version to upgrade to. To redeploy the appliances, follow these steps:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;Open to the HCX plugin or connect to the HCX manager&lt;/li&gt;
+&lt;li&gt;Open the HCX plugin in vCenter or connect to the HCX manager&lt;/li&gt;
 &lt;li&gt;Select &lt;strong&gt;Interconnect&lt;/strong&gt; and then the &lt;strong&gt;Service Mesh&lt;/strong&gt; tab&lt;/li&gt;
 &lt;li&gt;Under the service mesh you&amp;rsquo;d like to test, click &lt;strong&gt;View Appliances&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;Select the NE appliance and click &lt;strong&gt;Redeploy&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;You&amp;rsquo;d then have the option of selecting &lt;strong&gt;Standard&lt;/strong&gt; or &lt;strong&gt;In-Service&lt;/strong&gt; mode&#39;&lt;/li&gt;
-&lt;li&gt;Once the redeployment is initiated, the tasks can be viewed from the &lt;strong&gt;Tasks&lt;/strong&gt; tab&lt;/li&gt;
+&lt;li&gt;You&amp;rsquo;d then have the option of selecting &lt;strong&gt;Standard&lt;/strong&gt; or &lt;strong&gt;In-Service&lt;/strong&gt; mode&lt;/li&gt;
+&lt;li&gt;Once the redeployment is initiated, the specific steps and actions taken can be viewed in the &lt;strong&gt;Tasks&lt;/strong&gt; tab&lt;/li&gt;
 &lt;/ol&gt;
 
 
@@ -430,7 +430,7 @@
 
 &lt;/figure&gt;
 
-&lt;p&gt;As a comparison, here are the IPs of the original and newly deployed NE appliances:&lt;/p&gt;
+&lt;p&gt;As a comparison, here are the IPs of the original and newly deployed NE appliance on-prem:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
