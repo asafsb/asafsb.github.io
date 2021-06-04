@@ -13,6 +13,542 @@
     </image>
     
     <item>
+      <title>Posts</title>
+      <link>https://softwaredefinedcoffee.com/post/</link>
+      <pubDate>Fri, 04 Jun 2021 01:00:11 +0000</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/</guid>
+      <description></description>
+      
+    </item>
+    
+    <item>
+      <title>Testing In-Service Upgrade for HCX Network Extension Appliances</title>
+      <link>https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/</link>
+      <pubDate>Fri, 04 Jun 2021 01:00:11 +0000</pubDate>
+      <guid>https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/</guid>
+      <description>&lt;p&gt;HCX 4.0 introduced plenty of new &lt;u&gt;
+&lt;a href=&#34;https://blogs.vmware.com/networkvirtualization/2021/02/introducing-hcx4-0.html/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;features and functionalities&lt;/a&gt;&lt;/u&gt;, such as migration details and security tag migrations to name a few. One of the features I like the most is In-Service Upgrade for the network extension appliance(s). While the standard upgrade re-deploys the network extension (NE) appliance, the in-service upgrade will deploy an extra appliance with a new set of IPs prior to removing the old appliance. This will allow HCX to establish a tunnel between the two new appliances and then do a switchover to minimize downtime for the extended networks.&lt;/p&gt;
+&lt;p&gt;To compare the downtime the extended networks experience using each upgrade methods, I tested the impact of each one on the connectivity between two VMs while redeploying the NE appliances. You can read about the steps I performed or jump straight to the test conclusion:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;u&gt;
+&lt;a href=&#34;#test-environment-overview&#34;&gt;Test Environment Overview&lt;/a&gt;&lt;/u&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;u&gt;
+&lt;a href=&#34;#standard-upgrade&#34;&gt;Standard Upgrade&lt;/a&gt;&lt;/u&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;u&gt;
+&lt;a href=&#34;#in-service-upgrade&#34;&gt;In-Service Upgrade&lt;/a&gt;&lt;/u&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;u&gt;
+&lt;a href=&#34;#conclusion&#34;&gt;Conclusion&lt;/a&gt;&lt;/u&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    This test was performed in my lab environment, so the actual results in other environments may vary
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;test-environment-overview&#34;&gt;Test Environment Overview&lt;/h3&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image1_hu7980b5664fe651ea4f50c3741ba363a1_138931_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image1_hu7980b5664fe651ea4f50c3741ba363a1_138931_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;Test Environment Diagram&#34; width=&#34;1033&#34; height=&#34;652&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;To perform the test I am using my home lab, located in Chicago, and a VMware Cloud on AWS SDDC in Oregon (us-west-2). Both sites are connected via route-based VPN and have HCX deployed and a service mesh configured:
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image2_huc2a9878b0dbf41498a44b6ef06ff4651_67565_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image2_huc2a9878b0dbf41498a44b6ef06ff4651_67565_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;HCX Service Mesh&#34; width=&#34;1301&#34; height=&#34;343&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;A single network, &lt;strong&gt;site1-vlan11&lt;/strong&gt;, is extended between the sites. The CIDR range is &lt;strong&gt;172.25.11.0/24&lt;/strong&gt; and my lab&amp;rsquo;s pfSense functions as the default gateway for the network. The pfSense is also the default gateway of the other network I&amp;rsquo;m using, &lt;strong&gt;core-vlan10&lt;/strong&gt; which uses CIDR &lt;strong&gt;&lt;strong&gt;172.25.10.0/24&lt;/strong&gt;&lt;/strong&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image3_hu3d5a62a52e884eb650b00f6c87e86939_96939_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image3_hu3d5a62a52e884eb650b00f6c87e86939_96939_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;HCX Network Extension&#34; width=&#34;1514&#34; height=&#34;388&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;The following VMs were used to test the connectivity:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Name&lt;/th&gt;
+&lt;th&gt;Location&lt;/th&gt;
+&lt;th&gt;Portgroup&lt;/th&gt;
+&lt;th&gt;IP Address&lt;/th&gt;
+&lt;th&gt;OS&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;core-mint&lt;/td&gt;
+&lt;td&gt;On-prem&lt;/td&gt;
+&lt;td&gt;core-vlan10&lt;/td&gt;
+&lt;td&gt;172.25.10.212&lt;/td&gt;
+&lt;td&gt;Linux Mint&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sdcoffee-vlan11&lt;/td&gt;
+&lt;td&gt;VMW on AWS&lt;/td&gt;
+&lt;td&gt;L2E_site1-vlan11-11-189c7e98&lt;/td&gt;
+&lt;td&gt;172.25.11.236&lt;/td&gt;
+&lt;td&gt;Photon OS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image4_huf66d987e5032ce932f902b233adffb6d_123383_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image4_huf66d987e5032ce932f902b233adffb6d_123383_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;Remote Cloud VM&#34; width=&#34;1083&#34; height=&#34;644&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;Before running the tests, the NE appliance on-prem is deployed with the following IPs:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Traffic type&lt;/th&gt;
+&lt;th&gt;IP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Management Network&lt;/td&gt;
+&lt;td&gt;172.25.10.22&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Uplink Network&lt;/td&gt;
+&lt;td&gt;192.168.1.222&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image5_hub5a1bafd8a008fb7a2fed1e978594019_157323_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image5_hub5a1bafd8a008fb7a2fed1e978594019_157323_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;NE Appliance IPs - Start&#34; width=&#34;1220&#34; height=&#34;529&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;To simulate the process that occurs during an appliance upgrade I opted to redeploy the appliances, as this gives me the option of running the test several times without needing to wait for a new version to upgrade to. To redeploy the appliances, follow these steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open to the HCX plugin or connect to the HCX manager&lt;/li&gt;
+&lt;li&gt;Select &lt;strong&gt;Interconnect&lt;/strong&gt; and then the &lt;strong&gt;Service Mesh&lt;/strong&gt; tab&lt;/li&gt;
+&lt;li&gt;Under the service mesh you&amp;rsquo;d like to test, click &lt;strong&gt;View Appliances&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Select the NE appliance and click &lt;strong&gt;Redeploy&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;You&amp;rsquo;d then have the option of selecting &lt;strong&gt;Standard&lt;/strong&gt; or &lt;strong&gt;In-Service&lt;/strong&gt; mode&#39;&lt;/li&gt;
+&lt;li&gt;Once the redeployment is initiated, the tasks can be viewed from the &lt;strong&gt;Tasks&lt;/strong&gt; tab&lt;/li&gt;
+&lt;/ol&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image6_hu80334f006cc5a939614847c034fb3307_112609_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image6_hu80334f006cc5a939614847c034fb3307_112609_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;HCX Redeploy&#34; width=&#34;703&#34; height=&#34;783&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;h3 id=&#34;standard-upgrade&#34;&gt;Standard Upgrade&lt;/h3&gt;
+&lt;p&gt;Before redeploying the NE appliance I launched the following ping command from &lt;strong&gt;core-mint&lt;/strong&gt;, which provides a timestamp and will also show failed ping packets:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ping -i 1 -O 172.25.11.236 | ts &amp;quot;%H:%M:%.S&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, I redeployed the NE appliance using &lt;strong&gt;Standard&lt;/strong&gt; mode:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;NE Redeployment - Standard&#34;&gt;&lt;/p&gt;
+&lt;p&gt;During the redeployment process, a new NE appliance will be deployed in both the source and destination sites. In this screenshot, we can see that a new NE appliance is deployed on-prem with the same IPs as the original appliance:&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image8_hu0a927395db291a3cf15773f511f35fd1_153607_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image8_hu0a927395db291a3cf15773f511f35fd1_153607_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;NE Appliance IPs - Standard&#34; width=&#34;1222&#34; height=&#34;537&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;After a couple of minutes, HCX will start configuring the connectivity between the two new NE appliances:&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image9_hud74f062dedfc1d4be3192a794b6beb3d_29689_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image9_hud74f062dedfc1d4be3192a794b6beb3d_29689_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;NE redeploy task list - Standard &#34; width=&#34;1023&#34; height=&#34;105&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;During this step, the tunnel is being established between the two appliances, which means downtime for the extended networks. In my environment the VMs lost connectivity for a little under &lt;strong&gt;25 seconds&lt;/strong&gt;:&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image10_huf1ffbb441dda292c0c7dda194ca1c82c_92308_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image10_huf1ffbb441dda292c0c7dda194ca1c82c_92308_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;Ping test - Standard&#34; width=&#34;724&#34; height=&#34;470&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;Once the tunnel is up and running HCX will remove the original appliances and will rename them.&lt;/p&gt;
+&lt;h3 id=&#34;in-service-upgrade&#34;&gt;In-Service Upgrade&lt;/h3&gt;
+&lt;p&gt;Similar to the steps performed in the standard mode test, I started a continuous timestamped ping from &lt;strong&gt;core-mint&lt;/strong&gt;. However, when running the same command as I did previously for the first couple of tests I did not see any loss of packets (which is very promising!). Because of that, I changed the ping frequency to 200ms, which is the minimum possible:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ping -i 0.2 -O 172.25.11.236 | ts &amp;quot;%H:%M:%.S&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, I redeployed the NE appliance using &lt;strong&gt;In-Service&lt;/strong&gt; mode:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;image11.png&#34; alt=&#34;NE Redeployment - Standard&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Once again, a new NE appliance will be deployed in both the source and destination sites. This time, as seen in the screenshot of the on-prem environment, the new NE appliance is deployed using a different set of IPs:&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image12_hu28615bda6c0eab6b03dedfc6e685b3d2_153758_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image12_hu28615bda6c0eab6b03dedfc6e685b3d2_153758_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;NE Appliance IPs - In-Service&#34; width=&#34;1222&#34; height=&#34;533&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;As a comparison, here are the IPs of the original and newly deployed NE appliances:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Interface&lt;/th&gt;
+&lt;th&gt;Original NE Appliance&lt;/th&gt;
+&lt;th&gt;New NE Appliance&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Management IP&lt;/td&gt;
+&lt;td&gt;172.25.10.22&lt;/td&gt;
+&lt;td&gt;172.25.10.24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Uplink IP&lt;/td&gt;
+&lt;td&gt;192.168.1.222&lt;/td&gt;
+&lt;td&gt;192.168.1.224&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Since In-Service is using a new set of appliances with different IP addresses the tunnel configuration between them doesn&amp;rsquo;t impact existing traffic. Instead, workloads are only experiencing a short amount of downtime during a new step, the &lt;strong&gt;NetExt Switchover&lt;/strong&gt;:&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image13_hu09ec09b8b33d115b23ff1f7be1e6973c_89728_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image13_hu09ec09b8b33d115b23ff1f7be1e6973c_89728_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;NE redeploy task list - In-Service &#34; width=&#34;1330&#34; height=&#34;338&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;Before this step, there are two sets of appliances with a tunnel established between them. During this step, the network extensions are switched over to the tunnel between the two new appliances. In my environment the VMs lost connectivity for &lt;strong&gt;just a little more than a second&lt;/strong&gt;:&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image14_hu90f1b4f62e0b0556dd877f43d7366a62_44488_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;https://softwaredefinedcoffee.com/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/image14_hu90f1b4f62e0b0556dd877f43d7366a62_44488_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;Ping test - In-Service&#34; width=&#34;723&#34; height=&#34;202&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;Again, once the extensions are switched over to the new appliances HCX will remove the original appliances and rename them.&lt;/p&gt;
+&lt;h3 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;Here is the summary of the results I got in the tests of the two upgrade/redeployment modes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Metric&lt;/th&gt;
+&lt;th&gt;Standard Mode&lt;/th&gt;
+&lt;th&gt;In-Service Mode&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Network Downtime&lt;/td&gt;
+&lt;td&gt;24.55 Seconds&lt;/td&gt;
+&lt;td&gt;1.02 Seconds&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Preparation&lt;/td&gt;
+&lt;td&gt;None Required&lt;/td&gt;
+&lt;td&gt;- Additional IP per NE appliance upgraded/redeployed &lt;br&gt; - Service mesh must be in a healthy state &lt;br&gt; - HCX 4.0 and above&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Just as a reminder, this was tested in my lab environment so your mileage may vary. That being said, the difference between the two modes is quite significant. While 25 seconds will definitely impact applications, most shouldn&amp;rsquo;t even notice a 1 second outage, which is similar to what is experienced during vMotion.&lt;/p&gt;
+&lt;p&gt;Since most of the downtime the HCX extended networks experience is planned due to upgrades, In-Service mode can significantly improve the availability of workloads connected to extended networks.&lt;/p&gt;
+</description>
+      
+        <category>HCX</category>
+      
+    </item>
+    
+    <item>
       <title>Configuring Route Based VPN Between VMware Cloud on AWS and pfSense</title>
       <link>https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/</link>
       <pubDate>Wed, 19 May 2021 01:00:11 +0000</pubDate>
@@ -179,8 +715,10 @@
 &lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt; - Assign the IPsec interface. This step enables the IPsec tunnel created in the previous step as a virtual interface for pfSense, so it can be leveraged by FRR to establish a BGP connection.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Navigate to &lt;strong&gt;Interfaces&lt;/strong&gt; &amp;gt; &lt;strong&gt;Assignments&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;At the bottom, under &lt;strong&gt;Available network ports&lt;/strong&gt;, select the newly created IPsec tunnel and click &lt;strong&gt;Add&lt;/strong&gt;
-&lt;img src=&#34;image7.png&#34; alt=&#34;IPsec interface&#34;&gt;&lt;/li&gt;
+&lt;li&gt;At the bottom, under &lt;strong&gt;Available network ports&lt;/strong&gt;, select the newly created IPsec tunnel and click &lt;strong&gt;Add&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;image7.png&#34; alt=&#34;IPsec interface&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;The new interface is added as &lt;strong&gt;OPT#&lt;/strong&gt;. In my case it was added as OPT4. Click the interface name&lt;/li&gt;
 &lt;li&gt;Check &lt;strong&gt;Enable Interface&lt;/strong&gt; and provide a &lt;strong&gt;Description&lt;/strong&gt; to make it easier to identify the interface&lt;/li&gt;
 &lt;li&gt;Click &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
@@ -319,15 +857,6 @@
         <category>RBVPN</category>
       
         <category>Route Based VPN</category>
-      
-    </item>
-    
-    <item>
-      <title>Posts</title>
-      <link>https://softwaredefinedcoffee.com/post/</link>
-      <pubDate>Wed, 19 May 2021 01:00:11 +0000</pubDate>
-      <guid>https://softwaredefinedcoffee.com/post/</guid>
-      <description></description>
       
     </item>
     

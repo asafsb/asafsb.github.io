@@ -660,7 +660,7 @@ Currently, I&rsquo;m using a pfSense router/firewall for my home lab, which mean
   
   
   <span class="middot-divider"></span>
-  <a class="gc-counter" data-url="https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/" href="https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/#graphcomment"></a>
+  <a class="gc-counter" data-url="https://softwaredefinedcoffee.com/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/" href="/post/2021-05-19-configuring-route-based-vpn-between-vmware-cloud-on-aws-and-pfsense/#graphcomment"></a>
   
 
   
@@ -857,8 +857,10 @@ Currently, I&rsquo;m using a pfSense router/firewall for my home lab, which mean
 <p><strong>Step 2</strong> - Assign the IPsec interface. This step enables the IPsec tunnel created in the previous step as a virtual interface for pfSense, so it can be leveraged by FRR to establish a BGP connection.</p>
 <ul>
 <li>Navigate to <strong>Interfaces</strong> &gt; <strong>Assignments</strong></li>
-<li>At the bottom, under <strong>Available network ports</strong>, select the newly created IPsec tunnel and click <strong>Add</strong>
-<img src="image7.png" alt="IPsec interface"></li>
+<li>At the bottom, under <strong>Available network ports</strong>, select the newly created IPsec tunnel and click <strong>Add</strong></li>
+</ul>
+<p><img src="image7.png" alt="IPsec interface"></p>
+<ul>
 <li>The new interface is added as <strong>OPT#</strong>. In my case it was added as OPT4. Click the interface name</li>
 <li>Check <strong>Enable Interface</strong> and provide a <strong>Description</strong> to make it easier to identify the interface</li>
 <li>Click <strong>Save</strong></li>
@@ -1256,6 +1258,13 @@ Currently, I&rsquo;m using a pfSense router/firewall for my home lab, which mean
   
   
   <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/2021-06-04-testing-in-service-upgrade-for-hcx-network-extension-appliances/" rel="next">Testing In-Service Upgrade for HCX Network Extension Appliances</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
     <a href="/post/2020-07-16-powershell-module-to-manage-workload-placement-in-vmwonaws-stretched-clusters/" rel="prev">PowerShell Module to Manage Workload Placement in VMware Cloud on AWS Stretched Clusters</a>
   </div>
@@ -1304,6 +1313,10 @@ Currently, I&rsquo;m using a pfSense router/firewall for my home lab, which mean
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/powershell.min.js"></script>
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/python.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/bash.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/shell.min.js"></script>
         
       
 
@@ -1422,6 +1435,7 @@ Currently, I&rsquo;m using a pfSense router/firewall for my home lab, which mean
   })();
 
 </script>
+
 
 
 
